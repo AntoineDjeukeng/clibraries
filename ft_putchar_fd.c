@@ -1,25 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_putchar_fd.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adjeuken <adjeuken@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/22 13:54:59 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/05/22 16:54:51 by adjeuken         ###   ########.fr       */
+/*   Created: 2025/05/22 15:17:46 by adjeuken          #+#    #+#             */
+/*   Updated: 2025/05/22 15:23:31 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_strlen(const char *str)
+void	ft_putchar_fd(char c, int fd)
 {
-	int	count;
-
-	count = 0;
-	while (str[count]!='\0')
-	{
-		count++;
-	}
-	return (count);
+	write(fd, &c, 1);
 }

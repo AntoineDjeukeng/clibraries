@@ -6,13 +6,13 @@
 /*   By: adjeuken <adjeuken@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 15:54:20 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/05/21 09:53:54 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/05/22 17:24:06 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	sft_strlen(char *str)
+static int	sft_strlen(const char *str)
 {
 	int	count;
 
@@ -25,7 +25,7 @@ static int	sft_strlen(char *str)
 	return (count);
 }
 
-unsigned int	ft_strlcpy(char *dest, char *src, unsigned int size)
+unsigned int	ft_strlcpy(char *dest, const char *src, unsigned int size)
 {
 	unsigned int	ls;
 	unsigned int	temp;

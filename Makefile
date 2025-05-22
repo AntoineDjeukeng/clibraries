@@ -6,10 +6,6 @@ OBJ_FILES = $(patsubst %.c,%.o,$(SRC_FILES))
 
 NAME = libft
 
-git config user.name "AntoineDjeukeng"
-git config user.email "antoinedjeukeng.com"
-
-
 all: $(NAME)
 
 $(NAME): $(OBJ_FILES)
