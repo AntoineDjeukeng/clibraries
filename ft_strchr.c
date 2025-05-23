@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adjeuken <adjeuken@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 19:48:42 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/05/21 08:58:12 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/05/23 17:10:37 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,16 @@
 
 const char	*ft_strchr(const char *s, int c)
 {
+	unsigned char	uc;
+
+	uc = (unsigned char)c;
 	while (*s)
 	{
-		if (*s == c)
+		if ((unsigned char)*s == uc)
 			return (s);
 		s++;
 	}
+	if ((unsigned char)*s == uc)
+		return (s);
 	return (NULL);
 }

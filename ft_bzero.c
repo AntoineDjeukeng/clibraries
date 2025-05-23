@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-//it just reset the memory it doesn't release it back to the system
+// it just reset the memory it doesn't release it back to the system
 void	ft_bzero(void *s, size_t n)
 {
 	unsigned char	*ptr;

@@ -3,40 +3,53 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adjeuken <adjeuken@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:55:06 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/05/22 14:45:01 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/05/23 20:54:38 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
+#include <stdlib.h>
+#include <limits.h>
 
-static void	ft_putnbr(int nb, char *str, int *p)
+// Helper to count the number of characters needed
+static int	count_digits(int n)
 {
-	long	n;
+	int		len = (n <= 0); // for '0' or '-'
 
-	n = nb;
-	if (n < 0)
+	while (n)
 	{
-		str[(*p)++] = '-';
-		n = -n;
+		len++;
+		n /= 10;
 	}
-	if (n >= 10)
-		ft_putnbr(n / 10, str, p);
-	str[(*p)++] = (n % 10) + '0';
+	return (len);
 }
 
 char	*ft_itoa(int n)
 {
-	char	*str;
-	int		pos;
+	int		len = count_digits(n);
+	char	*str = malloc(len + 1); // +1 for null terminator
+	long	num = n;
 
-	pos = 0;
-	str = malloc(21);
 	if (!str)
 		return (NULL);
-	ft_putnbr(n, str, &pos);
-	str[pos] = '\0';
+	str[len] = '\0';
+	if (num < 0)
+	{
+		str[0] = '-';
+		num = -num;
+	}
+	else if (num == 0)
+	{
+		str[0] = '0';
+	}
+
+	while (num > 0)
+	{
+		str[--len] = (num % 10) + '0';
+		num /= 10;
+	}
 	return (str);
 }

@@ -1,31 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strrchr.c                                       :+:      :+:    :+:   */
+/*   ft_lstmap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/19 20:03:51 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/05/23 17:16:24 by adjeuken         ###   ########.fr       */
+/*   Created: 2025/05/23 16:20:13 by adjeuken          #+#    #+#             */
+/*   Updated: 2025/05/23 16:41:11 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-const char	*ft_strrchr(const char *s, int c)
+t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *))
 {
-	const char	*r;
-	unsigned char	uc;
+	t_list	*new_list;
+	t_list	*current;
 
-	uc = (unsigned char)c;
-	r = NULL;
-	while (*s)
+	if (!lst || !f)
+		return (NULL);
+	new_list = NULL;
+	while (lst)
 	{
-		if ((unsigned char)*s == uc)
-			r = s;
-		s++;
+		current = ft_lstnew(f(lst->content));
+		if (!current)
+		{
+			ft_lstclear(&new_list, del);
+			return (NULL);
+		}
+		ft_lstadd_back(&new_list, current);
+		lst = lst->next;
 	}
-	if ((unsigned char)*s == uc)
-		r = s;
-	return (r);
+	return (new_list);
 }
