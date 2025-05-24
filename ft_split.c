@@ -6,111 +6,121 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 12:54:57 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/05/23 19:59:18 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/05/24 09:05:27 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-typedef struct s_newstr
+int	ft_count(char *str, char ch, int *count)
 {
-	char			*str;
-	size_t			len;
-	struct s_newstr	*next;
-}	t_newstr;
+	int	i;
 
-t_newstr *create_newstr(char *str, size_t len)
-{
-	t_newstr *newstr = malloc(sizeof(t_newstr));
-	if (!newstr)
-		return NULL;
-	newstr->str = str;
-	newstr->len = len;
-	newstr->next = NULL;
-	return newstr;
-}
-
-// Free linked list
-void free_newstr_list(t_newstr *head)
-{
-	t_newstr *tmp;
-	while (head)
+	i = 0;
+	*count = 0;
+	while (str[i])
 	{
-		tmp = head->next;
-		free(head);
-		head = tmp;
-	}
-}
-
-// Count nodes in linked list
-size_t count_nodes(t_newstr *head)
-{
-	size_t count = 0;
-	while (head)
-	{
-		count++;
-		head = head->next;
-	}
-	return count;
-}
-
-// Convert linked list to NULL-terminated array of strings (allocated)
-static char **list_to_array(t_newstr *head)
-{
-	size_t count = count_nodes(head);
-	char **arr = malloc(sizeof(char *) * (count + 1));
-	size_t i = 0;
-
-	while (head)
-	{
-		char *str = malloc(head->len + 1);
-		if (!str)
+		if (str[i] == ch)
 		{
-			// Free allocated so far
-			while (i > 0)
-			{
-				free(arr[--i]);
-			}
-			free(arr);
-			return NULL;
+			str[i] = '\0';
+			if (i > 0 && str[i - 1] != '\0')
+				(*count)++;
 		}
-		memcpy(str, head->str, head->len);
-		str[head->len] = '\0';
-		arr[i++] = str;
-		head = head->next;
+		i++;
 	}
-	arr[i] = NULL;
-	
-	return arr;
+	if (i > 0 && str[i - 1] != '\0')
+		(*count)++;
+	return (i);
 }
 
-// Your ft_split function using short helpers
-char **ft_split(const char *s, char c)
+int	ft_strndup(const char *src, char **segments, int j, int len)
 {
-	t_newstr *head = NULL;
-	t_newstr *current = NULL;
-	size_t start = 0, i = 0;
+	int	i;
 
-	while (1)
+	i = 0;
+	i = 0;
+	segments[j] = malloc(len + 1);
+	if (!segments[j])
 	{
-		if (s[i] == c || s[i] == '\0')
+		while (j--)
+			free(segments[j]);
+		return (0);
+	}
+	while (i < len)
+	{
+		segments[j][i] = src[i];
+		i++;
+	}
+	segments[j][i] = '\0';
+	return (1);
+}
+
+char	**ft_alloc_segments(char **segments, int count, int len,
+		const char *str)
+{
+	int	i;
+	int	j;
+	int	start;
+
+	i = 0;
+	j = 0;
+	start = 0;
+	while (i <= len)
+	{
+		if (str[i] == '\0')
 		{
-			if (i > start)
+			if (i - start > 0 && j < count)
 			{
-				t_newstr *node = create_newstr((char *)(s + start), i - start);
-				if (!head)
-					head = node;
-				else
-					current->next = node;
-				current = node;
+				if (!ft_strndup(&str[start], segments, j, i - start))
+					return (NULL);
+				j++;
 			}
 			start = i + 1;
 		}
-		if (s[i] == '\0')
-			break;
 		i++;
 	}
-	char **result = list_to_array(head);
-	free_newstr_list(head);
-	return result;
+	segments[j] = NULL;
+	return (segments);
+}
+
+void	ft_free_segments(char **segments)
+{
+	int	i;
+
+	i = 0;
+	if (!segments)
+		return ;
+	while (segments[i])
+	{
+		free(segments[i]);
+		i++;
+	}
+	free(segments);
+}
+
+char	**ft_split(const char *s, char c)
+{
+	int		count;
+	int		len;
+	char	**segments;
+	char	*copy;
+
+	copy = ft_strdup((char *)s);
+	if (!copy)
+		return (NULL);
+	len = ft_count(copy, c, &count);
+	segments = malloc((count + 1) * sizeof(char *));
+	if (!segments)
+	{
+		free(copy);
+		return (NULL);
+	}
+	if (!ft_alloc_segments(segments, count, len, copy))
+	{
+		free(copy);
+		ft_free_segments(segments);
+		return (NULL);
+	}
+	free(copy);
+	return (segments);
 }
