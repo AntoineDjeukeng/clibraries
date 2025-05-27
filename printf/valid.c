@@ -63,6 +63,8 @@ typedef struct Node {
     char *format;
     width width;
     precision precision;
+    char valide;
+    int lout;
     char *output;
     unsigned char flags;
     LengthModifier length;
@@ -146,7 +148,41 @@ width ft_check_width(const char **pp) {
     *pp = p;
     return result;
 }
+int compatibility[18][7] = {
+    // #  0  -  space +  '  I
+    { 0, 1, 1, 1, 1, 2, 2 },  // d
+    { 0, 1, 1, 1, 1, 2, 2 },  // i
+    { 1, 1, 1, 0, 0, 2, 2 },  // o
+    { 0, 1, 1, 0, 0, 2, 2 },  // u
+    { 1, 1, 1, 0, 0, 2, 2 },  // x
+    { 1, 1, 1, 0, 0, 2, 2 },  // X
+    { 1, 1, 1, 0, 1, 2, 0 },  // f
+    { 1, 1, 1, 0, 1, 2, 0 },  // F
+    { 1, 1, 1, 0, 1, 2, 0 },  // e
+    { 1, 1, 1, 0, 1, 2, 0 },  // E
+    { 1, 1, 1, 0, 1, 2, 0 },  // g
+    { 1, 1, 1, 0, 1, 2, 0 },  // G
+    { 1, 1, 1, 0, 1, 2, 0 },  // a
+    { 1, 1, 1, 0, 1, 2, 0 },  // A
+    { 0, 0, 1, 0, 0, 0, 0 },  // c
+    { 0, 0, 1, 0, 0, 0, 0 },  // s
+    { 0, 1, 1, 0, 0, 0, 0 },  // p
+    { 0, 0, 0, 0, 0, 0, 0 },  // n
+};
 
+
+int valid_flag_combo(unsigned char flags, FormatSpecifier spec)
+{
+	int bit;
+
+	bit = 0;
+    while ( bit < 7 ) {
+        if ((flags & (1 << bit)) && compatibility[spec][bit] == 0)
+            return (0);
+		++bit;
+    }
+    return (1);
+}
 precision ft_check_precision(const char **pp) {
     const char *p = *pp;
     precision result = {0};
@@ -212,13 +248,104 @@ LengthModifier parse_length(const char **p) {
     return LEN_NONE;
 }
 
-int valid_flag_combo(unsigned char flags, FormatSpecifier spec) {
-    return 1; // Simplified for now; implement specific checks as needed
+
+int ft_check_percent(Node *node, const char **p_ptr) {
+    const char *p;
+    int i;
+    int count;
+
+    p = *p_ptr;
+    i = 0;
+    count = 0;
+    if (*p != '%') 
+        return 1;
+    while (p[i] == '%' && p[i + 1] == '%') {
+        count++;
+        i += 2;
+    }
+    if (count > 0) {
+        *p_ptr = p + i;
+        node->output = malloc(count + 1);
+        if (!node->output)
+            return 0;
+        i=0;
+        while (i < count) {
+            node->output[i] = '%';
+            i++;
+        }
+        node->output[count] = '\0';
+        node->lout += count;
+        return 0;
+    }
+    return 1;
+}
+
+void handle_format_node(Node *node) {
+    switch (node->spec) {
+        case SPEC_INT:
+            if (node->precision.precision_value >= 0) {
+                handle_int_with_precision(node);
+            } else if (node->width.width_value > 0) {
+                handle_int_with_width(node);
+            } else {
+                handle_plain_int(node);
+            }
+            break;
+
+        case SPEC_STRING:
+            if (node->precision.precision_value >= 0) {
+                handle_string_with_precision(node);
+            } else {
+                handle_plain_string(node);
+            }
+            break;
+
+        case SPEC_FLOAT:
+            if (node->flags & FLAG_ZERO) {
+                handle_zero_padded_float(node);
+            } else {
+                handle_plain_float(node);
+            }
+            break;
+
+        default:
+            handle_unknown_specifier(node);
+            break;
+    }
+}
+
+
+void ft_build_output(Node *node)
+{
+    const char *append_str = "Parsed OK";
+
+    size_t old_len = node->output ? strlen(node->output) : 0;
+    size_t append_len = strlen(append_str);
+    char *new_output = malloc(old_len + append_len + 1);
+    if (!new_output)
+        return;
+
+    if (node->output)
+        strcpy(new_output, node->output);
+    else
+        new_output[0] = '\0';
+
+    strcpy(new_output + old_len, append_str);
+
+    free(node->output);
+    node->output = new_output;
+
+    if (node->lout == 0)
+        node->lout = old_len + append_len;
 }
 
 void analyze_format(Node *node) {
     const char *p = node->text;
-    if (*p != '%') return;
+
+    if (!ft_check_percent(node, &p))
+        return;
+    if (*p != '%') 
+        return;
     p++;
     node->flags = parse_flags(&p);
     node->width = ft_check_width(&p);
@@ -226,11 +353,14 @@ void analyze_format(Node *node) {
     node->length = parse_length(&p);
     node->spec = parse_specifier(*p);
     p++;
-    node->output = strdup("Parsed OK");
+    ft_build_output(node);
 }
 
 void append_to_list(List *list, const char *str, int start, int end) {
     Node *new_node = malloc(sizeof(Node));
+    if(!new_node)
+        return;
+    
     new_node->text = strndup(str + start, end - start);
     new_node->output = NULL;
     new_node->next = NULL;
@@ -298,7 +428,7 @@ void parse_printf_string(const char *str, List *parts, List *formats) {
 }
 
 int main() {
-    const char *fmt = "This is a test with %d values and %% signs and %10.2f floats.";
+    const char *fmt = "This is a test with %d values and %% signs and %%%%%10.2f floats.";
     List parts, formats;
     init_list(&parts);
     init_list(&formats);
