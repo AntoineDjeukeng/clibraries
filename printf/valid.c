@@ -1,30 +1,6 @@
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
-#include <unistd.h>
-#include <stdlib.h>
-
-#define FLAG_HASH   (1 << 0)
-#define FLAG_ZERO   (1 << 1)
-#define FLAG_MINUS  (1 << 2)
-#define FLAG_SPACE  (1 << 3)
-#define FLAG_PLUS   (1 << 4)
-#define FLAG_TICK   (1 << 5)
-#define FLAG_I      (1 << 6)
-
+#include "ft.h"
 const char flag_chars[7] = { '#', '0', '-', ' ', '+', '\'', 'I' };
 
-typedef enum {
-    LEN_NONE, LEN_H, LEN_HH, LEN_L, LEN_LL, LEN_CAPL, LEN_Z, LEN_J, LEN_T
-} LengthModifier;
-
-typedef enum {
-    SPEC_D, SPEC_I, SPEC_O, SPEC_U,
-    SPEC_X, SPEC_X_CAP, SPEC_F, SPEC_F_CAP,
-    SPEC_E, SPEC_E_CAP, SPEC_G, SPEC_G_CAP,
-    SPEC_A, SPEC_A_CAP, SPEC_C, SPEC_S, SPEC_P, SPEC_N,
-    SPEC_UNKNOWN = -1
-} FormatSpecifier;
 
 const char *specifier_str[] = {
     "d", "i", "o", "u", "x", "X", "f", "F",
@@ -35,119 +11,10 @@ const char *length_str[] = {
     "", "h", "hh", "l", "ll", "L", "z", "j", "t"
 };
 
-#define HAS_WIDTH          0x01
-#define HAS_DYNAMIC_WIDTH  0x02
-#define HAS_POSITIONAL_ARG 0x04
-#define HAS_WIDTH_POSITION 0x08
-#define HAS_PRECISION          0x01
-#define HAS_DYNAMIC_PRECISION  0x02
-#define HAS_PRECISION_POSITION 0x08
 
-typedef struct {
-    int arg_position;
-    int width_position;
-    int width_value;
-    int flags;
-    int type;
-} width;
 
-typedef struct {
-    int arg_position;
-    int precision_position;
-    int precision_value;
-    int flags;
-} precision;
 
-typedef struct Node {
-    char *text;
-    char *format;
-    width width;
-    precision precision;
-    char valide;
-    int lout;
-    char *output;
-    unsigned char flags;
-    LengthModifier length;
-    FormatSpecifier spec;
-    struct Node *next;
-} Node;
 
-typedef struct {
-    Node *head;
-    Node *tail;
-} List;
-
-void init_list(List *list) {
-    list->head = NULL;
-    list->tail = NULL;
-}
-
-unsigned char parse_flags(const char **p) {
-    unsigned char flags = 0;
-    int found = 1, i;
-    while (found) {
-        found = 0;
-        for (i = 0; i < 7; i++) {
-            if (**p == flag_chars[i]) {
-                flags |= (1 << i);
-                (*p)++;
-                found = 1;
-                break;
-            }
-        }
-    }
-    return flags;
-}
-
-int parse_number_or_positional(const char **p, int *positional) {
-    const char *start = *p;
-    int val = 0;
-    *positional = 0;
-    if (!isdigit(**p)) return -1;
-    while (isdigit(**p)) {
-        val = val * 10 + (**p - '0');
-        (*p)++;
-    }
-    if (**p == '$') {
-        *positional = val;
-        (*p)++;
-        return -1;
-    }
-    return val;
-}
-
-width ft_check_width(const char **pp) {
-    const char *p = *pp;
-    width result = {0};
-    result.width_value = -1;
-    result.width_position = 0;
-    result.flags = 0;
-    if (*p == '*') {
-        p++;
-        result.flags |= HAS_WIDTH | HAS_DYNAMIC_WIDTH;
-        if (isdigit(*p)) {
-            int pos = 0;
-            int dummy = parse_number_or_positional(&p, &pos);
-            if (pos > 0) {
-                result.width_position = pos;
-                result.flags |= HAS_WIDTH_POSITION;
-            }
-        }
-    } else {
-        int pos = 0;
-        int val = parse_number_or_positional(&p, &pos);
-        if (val >= 0) {
-            result.width_value = val;
-            result.flags |= HAS_WIDTH;
-        }
-        if (pos > 0) {
-            result.arg_position = pos;
-            result.flags |= HAS_POSITIONAL_ARG;
-        }
-    }
-    *pp = p;
-    return result;
-}
 int compatibility[18][7] = {
     // #  0  -  space +  '  I
     { 0, 1, 1, 1, 1, 2, 2 },  // d
@@ -171,18 +38,6 @@ int compatibility[18][7] = {
 };
 
 
-int valid_flag_combo(unsigned char flags, FormatSpecifier spec)
-{
-	int bit;
-
-	bit = 0;
-    while ( bit < 7 ) {
-        if ((flags & (1 << bit)) && compatibility[spec][bit] == 0)
-            return (0);
-		++bit;
-    }
-    return (1);
-}
 precision ft_check_precision(const char **pp) {
     const char *p = *pp;
     precision result = {0};
@@ -280,39 +135,39 @@ int ft_check_percent(Node *node, const char **p_ptr) {
     return 1;
 }
 
-void handle_format_node(Node *node) {
-    switch (node->spec) {
-        case SPEC_INT:
-            if (node->precision.precision_value >= 0) {
-                handle_int_with_precision(node);
-            } else if (node->width.width_value > 0) {
-                handle_int_with_width(node);
-            } else {
-                handle_plain_int(node);
-            }
-            break;
+// void handle_format_node(Node *node) {
+//     switch (node->spec) {
+//         case SPEC_INT:
+//             if (node->precision.precision_value >= 0) {
+//                 handle_int_with_precision(node);
+//             } else if (node->width.width_value > 0) {
+//                 handle_int_with_width(node);
+//             } else {
+//                 handle_plain_int(node);
+//             }
+//             break;
 
-        case SPEC_STRING:
-            if (node->precision.precision_value >= 0) {
-                handle_string_with_precision(node);
-            } else {
-                handle_plain_string(node);
-            }
-            break;
+//         case SPEC_STRING:
+//             if (node->precision.precision_value >= 0) {
+//                 handle_string_with_precision(node);
+//             } else {
+//                 handle_plain_string(node);
+//             }
+//             break;
 
-        case SPEC_FLOAT:
-            if (node->flags & FLAG_ZERO) {
-                handle_zero_padded_float(node);
-            } else {
-                handle_plain_float(node);
-            }
-            break;
+//         case SPEC_FLOAT:
+//             if (node->flags & FLAG_ZERO) {
+//                 handle_zero_padded_float(node);
+//             } else {
+//                 handle_plain_float(node);
+//             }
+//             break;
 
-        default:
-            handle_unknown_specifier(node);
-            break;
-    }
-}
+//         default:
+//             handle_unknown_specifier(node);
+//             break;
+//     }
+// }
 
 
 void ft_build_output(Node *node)
@@ -364,6 +219,7 @@ void append_to_list(List *list, const char *str, int start, int end) {
     new_node->text = strndup(str + start, end - start);
     new_node->output = NULL;
     new_node->next = NULL;
+    new_node->width.arg_position=-1;
     if (list->tail) {
         list->tail->next = new_node;
     } else {
