@@ -3,16 +3,16 @@
 
 int main() {
     int n;
-    int fd = 0;
-    // int fd = open("note.txt", O_RDONLY);
+    // int fd = 0;
+    int fd = open("note.txt", O_RDONLY);
     if (fd == -1) {
         perror("open");
         return 1;
     }
-
+    printf("the buffer size is %d\n",BUFFER_SIZE);
     char *line;
     n=0;
-    while ((line = ft_get_line(fd, 200)) != NULL) 
+    while ((line = ft_get_line(fd, BUFFER_SIZE)) != NULL) 
     {
         printf("------%d-----\n",n);
         printf("Line : %s", line);
