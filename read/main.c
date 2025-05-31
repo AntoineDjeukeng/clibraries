@@ -1,29 +1,46 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adjeuken <adjeuken@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/31 19:57:44 by adjeuken          #+#    #+#             */
+/*   Updated: 2025/05/31 20:40:51 by adjeuken         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 #include <stdio.h>
 
-int main() {
-    int n;
-    // int fd = 0;
-    int fd = open("note.txt", O_RDONLY);
-    if (fd == -1) {
-        perror("open");
-        return 1;
-    }
-    printf("the buffer size is %d\n",BUFFER_SIZE);
-    char *line;
-    n=0;
-    while ((line = ft_get_line(fd, BUFFER_SIZE)) != NULL) 
-    {
-        printf("------%d-----\n",n);
-        printf("Line : %s", line);
-        free(line);
-        if(n==4)
-            break;
-        n++;
-    }
+int	main(void)
+{
+	int		n;
+	int		fd;
+	char	*line;
 
-    close(fd);
-    return 0;
+	fd = open("empty", O_RDONLY);
+	// fd=1000;
+	if (fd == -1)
+	{
+		perror("open");
+		return (1);
+	}
+	printf("the buffer size is %d\n", BUFFER_SIZE);
+	n = 0;
+	line = get_next_line(fd);
+	while (line != NULL)
+	{
+		printf("------%d-----\n", n);
+		printf("Line : %s", line);
+		free(line);
+		// if (n == 4)
+		// 	break ;
+		n++;
+		line = get_next_line(fd);
+	}
+	close(fd);
+	return (0);
 }
 
 // int main(void) {
@@ -31,12 +48,12 @@ int main() {
 //     int n = 0;
 
 //     printf("Type lines of text (Ctrl+D to stop):\n");
-//     while ((line = ft_get_line(0, 200)) != NULL)  // 0 = STDIN
+//     while ((line = get_next_line(0, 200)) != NULL)  // 0 = STDIN
 //     {
 //         printf("------%d-----\n", n);
 //         printf("Line : %s", line);
 //         free(line);
 //         n++;
 //     }
-//     return 0;
+//     return (0);
 // }

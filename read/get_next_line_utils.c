@@ -1,5 +1,16 @@
-#include "get_next_line.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adjeuken <adjeuken@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/31 19:56:49 by adjeuken          #+#    #+#             */
+/*   Updated: 2025/05/31 19:59:43 by adjeuken         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
+#include "get_next_line.h"
 
 int	ft_strlen(const char *str)
 {
@@ -33,10 +44,11 @@ char	*ft_strdup(char *s)
 	dup[i] = '\0';
 	return (dup);
 }
-char *ft_strcpy(char *dst, const char *src)
+
+char	*ft_strcpy(char *dst, const char *src)
 {
-	size_t i;
-    
+	size_t	i;
+
 	i = 0;
 	while (src[i])
 	{
@@ -44,49 +56,29 @@ char *ft_strcpy(char *dst, const char *src)
 		i++;
 	}
 	dst[i] = '\0';
-	return dst;
-}
-char *ft_strcat(char *dst, const char *src)
-{
-    size_t dst_len;
-    size_t i;
-    
-    dst_len = 0;
-    while (dst[dst_len] != '\0')
-        dst_len++;
-    i = 0;
-    while (src[i] != '\0')
-    {
-        dst[dst_len + i] = src[i];
-        i++;
-    }
-    dst[dst_len + i] = '\0';
-    return dst;
+	return (dst);
 }
 
-
-
-
-char *ft_strndup(const char *s, size_t n)
+char	*ft_strndup(const char *s, size_t n)
 {
-    size_t i;
-    size_t j;
-    char *dup;
+	size_t	i;
+	size_t	j;
+	char	*dup;
 
-    i = 0;
-    j = 0;
-    while (s[i] && i < n)
-        i++;
-    dup = (char *)malloc((i + 1) * sizeof(char));
-    if (!dup)
-        return NULL;
-    while (j < i)
-    {
-        dup[j] = s[j];
-        j++;
-    }
-    dup[i] = '\0'; 
-    return dup;
+	i = 0;
+	j = 0;
+	while (s[i] && i < n)
+		i++;
+	dup = (char *)malloc((i + 1) * sizeof(char));
+	if (!dup)
+		return (NULL);
+	while (j < i)
+	{
+		dup[j] = s[j];
+		j++;
+	}
+	dup[i] = '\0';
+	return (dup);
 }
 
 void	*ft_calloc(size_t nmemb, size_t size)
@@ -111,4 +103,3 @@ void	*ft_calloc(size_t nmemb, size_t size)
 	}
 	return (ptr);
 }
-
