@@ -17,7 +17,9 @@ const char flag_chars[7] = { '#', '0', '-', ' ', '+', '\'', 'I' };
 typedef enum {
     LEN_NONE, LEN_H, LEN_HH, LEN_L, LEN_LL, LEN_CAPL, LEN_Z, LEN_J, LEN_T
 } LengthModifier;
-
+const char *length_str[] = {
+    "", "h", "hh", "l", "ll", "L", "z", "j", "t"
+};
 typedef enum {
     SPEC_D, SPEC_I, SPEC_O, SPEC_U,
     SPEC_X, SPEC_X_CAP, SPEC_F, SPEC_F_CAP,
@@ -68,9 +70,7 @@ const char *specifier_str[] = {
     "e", "E", "g", "G", "a", "A", "c", "s", "p", "n"
 };
 
-const char *length_str[] = {
-    "", "h", "hh", "l", "ll", "L", "z", "j", "t"
-};
+
 
 #define HAS_WIDTH          0x01
 #define HAS_DYNAMIC_WIDTH  0x02
@@ -594,19 +594,72 @@ void parse_printf_string(const char *str, List *parts, List *formats) {
     if (b < i) append_to_list(parts, str, b, i);
 }
 
-int main() {
-    const char *fmt = "This is a test with %d values and %% signs and %%%%%10.2f floats.";
-    List parts, formats;
-    init_list(&parts);
-    init_list(&formats);
-    parse_printf_string(fmt, &parts, &formats);
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
 
-    Node *cur = formats.head;
-    while (cur) {
-        analyze_format(cur);
-        cur = cur->next;
+#define MAX_POSITIONS 10
+
+int extract_positions(const char *format, int positions[], int max_positions) {
+    int count = 0;
+    const char *p = format;
+
+    while (*p && count < max_positions) {
+        // Look for digit(s) followed by $
+        if (isdigit(*p)) {
+            const char *start = p;
+            int pos = 0;
+
+            // Read the number
+            while (isdigit(*p)) {
+                pos = pos * 10 + (*p - '0');
+                p++;
+            }
+
+            // Check for trailing $
+            if (*p == '$') {
+                positions[count++] = pos;
+                p++; // Skip the $
+            } else {
+                // Rewind if no $
+                p = start + 1;
+            }
+        } else {
+            p++;
+        }
     }
 
-    print_list(&formats, "Formats");
+    return count;  // Return number of positions found
+}
+
+int main() {
+    // const char *fmt = "This is a test with %d values and %% signs and %%%%%10.2f floats.";
+    // List parts, formats;
+    // init_list(&parts);
+    // init_list(&formats);
+    // parse_printf_string(fmt, &parts, &formats);
+
+    // Node *cur = formats.head;
+
+    // while (cur) {
+    //     // analyze_format(cur);
+
+
+
+    //     cur = cur->next;
+    // }
+
+    // print_list(&formats, "Formats");
+
+    const char *fmt = "%4$*2$.*3$Lf";
+    int positions[MAX_POSITIONS];
+    int num = extract_positions(fmt, positions, MAX_POSITIONS);
+
+    printf("Found %d positional argument(s):\n", num);
+    for (int i = 0; i < num; i++) {
+        printf("  %d\n", positions[i]);
+    }
+
+
     return 0;
 }
