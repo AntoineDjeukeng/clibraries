@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adjeuken <adjeuken@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 19:57:44 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/05/31 20:40:51 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/06/01 10:20:17 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,33 +15,79 @@
 
 int	main(void)
 {
-	int		n;
-	int		fd;
 	char	*line;
 
-	fd = open("empty", O_RDONLY);
-	// fd=1000;
-	if (fd == -1)
+	int fd1, fd2, fd3;
+	fd1 = open("note3.txt", O_RDONLY);
+	fd2 = open("note5.txt", O_RDONLY);
+	fd3 = open("note4.txt", O_RDONLY);
+	if (fd1 == -1 || fd2 == -1 || fd3 == -1)
 	{
 		perror("open");
 		return (1);
 	}
-	printf("the buffer size is %d\n", BUFFER_SIZE);
-	n = 0;
-	line = get_next_line(fd);
-	while (line != NULL)
+	printf("Interleaved read test across fd1, fd2, and fd3:\n");
+	for (int i = 0; i < 5; i++) // Read first 5 lines interleaved
 	{
-		printf("------%d-----\n", n);
-		printf("Line : %s", line);
-		free(line);
-		// if (n == 4)
-		// 	break ;
-		n++;
-		line = get_next_line(fd);
+		line = get_next_line(fd1);
+		if (line)
+		{
+			printf("[fd1] %s", line);
+			free(line);
+		}
+		line = get_next_line(fd2);
+		if (line)
+		{
+			printf("[fd2] %s", line);
+			free(line);
+		}
+		line = get_next_line(fd3);
+		if (line)
+		{
+			printf("[fd3] %s", line);
+			free(line);
+		}
 	}
-	close(fd);
+	close(fd1);
+	close(fd2);
+	close(fd3);
 	return (0);
 }
+
+// int	main(void)
+// {
+// 	int		n;
+// 	int		fd1;
+// 	int		fd2;
+// 	int		fd3;
+// 	char	*line;
+
+// 	fd1 = open("note.txt", O_RDONLY);
+// 	fd2 = open("note4.txt", O_RDONLY);
+// 	fd3 = open("note5.txt", O_RDONLY);
+// 	// fd = open("empty", O_RDONLY);
+// 	// fd=1000;
+// 	if (fd1 == -1  || fd2 == -1 || fd2 == -1)
+// 	{
+// 		perror("open");
+// 		return (1);
+// 	}
+// 	printf("the buffer size is %d\n", BUFFER_SIZE);
+// 	n = 0;
+// 	line = get_next_line(fd);
+// 	while (line != NULL)
+// 	{
+// 		printf("------%d-----\n", n);
+// 		printf("Line : %s", line);
+// 		free(line);
+// 		// if (n == 4)
+// 		// 	break ;
+// 		n++;
+// 		line = get_next_line(fd);
+// 	}
+// 	close(fd);
+// 	return (0);
+// }
 
 // int main(void) {
 //     char *line;

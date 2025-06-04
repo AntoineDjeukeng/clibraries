@@ -1,34 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 19:57:11 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/06/01 12:18:04 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/06/01 10:59:27 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*read_until_newline(int fd, char *keep)
 {
 	char	*buf;
 	ssize_t	bytes_read;
-	int pos;
-	char		*line;
 
 	buf = malloc(BUFFER_SIZE + 1);
 	if (!buf)
 		return (NULL);
-	pos=ft_strchr(keep, '\n');
-	if(pos)
-	{
-		len = pos - keep + 1;
-	}
-	
-		
 	while (!ft_strchr(keep, '\n'))
 	{
 		bytes_read = read(fd, buf, BUFFER_SIZE);
@@ -45,7 +36,7 @@ char	*read_until_newline(int fd, char *keep)
 		if (!keep)
 		{
 			free(buf);
-			return (NULL);
+			return (NULL); // malloc failure in append
 		}
 	}
 	free(buf);
@@ -70,7 +61,7 @@ char	*ft_strcat(char *dst, const char *src)
 	return (dst);
 }
 
-char	*append_buffer(char *old, const char *new_data)
+char	*append_buffer(char *old, char *new_data)
 {
 	char	*joined;
 	size_t	len;
@@ -90,85 +81,70 @@ char	*append_buffer(char *old, const char *new_data)
 	return (joined);
 }
 
-
-
-
-const char *ft_strchr(const char *s, int c)
+const char	*ft_strchr(const char *s, int c)
 {
-	unsigned char uc = (unsigned char)c;
-	const char *result;
-	const char *start;
-	char *copy;
-	size_t len;
-	
-	char *copy = NULL;
-	const char *start = s;
-	const char *result = NULL;
-	unsigned char uc = (unsigned char)c;
+	unsigned char	uc;
+
+	uc = (unsigned char)c;
 	while (*s)
 	{
 		if ((unsigned char)*s == uc)
-		{
-			result = s;
-			break;
-		}
+			return (s);
 		s++;
 	}
-	if (!result && (unsigned char)*s == uc)
-		result = s;
-	if (result)
-	{
-		size_t len = result - start;
-		copy = (char *)malloc(len + 1);
-		if (copy)
-		{
-			for (size_t i = 0; i < len; i++)
-				copy[i] = start[i];
-			copy[len] = '\0';
-
-			// You can now use `copy` as needed
-			// Example: printf("Up to match: %s\n", copy);
-			free(copy); // free if not returned
-		}
-	}
-
-	return result;
+	if ((unsigned char)*s == uc)
+		return (s);
+	return (NULL);
 }
 
+static char	*extract_line(const char *keep)
+{
+	size_t	len;
 
+	len = get_line_length(keep);
+	return (ft_strndup(keep, len));
+}
+
+static char	*update_keep(const char *keep)
+{
+	size_t	len;
+	char	*new_keep;
+
+	len = get_line_length(keep);
+	new_keep = ft_strdup(keep + len);
+	free((char *)keep);
+	return (new_keep);
+}
+
+static size_t	get_line_length(const char *keep)
+{
+	const char	*pos;
+
+	pos = ft_strchr(keep, '\n');
+	if (pos)
+		return (pos - keep + 1);
+	return (ft_strlen(keep));
+}
 
 char	*get_next_line(int fd)
 {
-	static char	*keep = NULL;
-	const char	*pos;
+	static char	*keep[MAX_FD];
 	char		*line;
-	char		*new_keep;
-	size_t		len;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 )
+	if (fd < 0 || fd >= MAX_FD || BUFFER_SIZE <= 0)
 		return (NULL);
-	if (!keep)
-		keep = ft_calloc(1, 1);
-	if (!keep)
+	if (!keep[fd])
+		keep[fd] = ft_calloc(1, 1);
+	if (!keep[fd])
 		return (NULL);
-	keep = read_until_newline(fd, keep);
-	if (!keep || *keep == '\0')
+	keep[fd] = read_until_newline(fd, keep[fd]);
+	if (!keep[fd] || *keep[fd] == '\0')
 	{
-		free(keep);
+		free(keep[fd]);
+		keep[fd] = NULL;
 		return (NULL);
 	}
-
-	
-	pos = ft_strchr(keep, '\n');
-	if (pos)
-		len = pos - keep + 1;
-	else
-		len = ft_strlen(keep);
-	line = ft_strndup(keep, len);
-	if (!line)
-		return (NULL);
-	new_keep = ft_strdup(keep + len);
-	free(keep);
-	keep = new_keep;
+	line = extract_line(keep[fd]);
+	keep[fd] = update_keep(keep[fd]);
 	return (line);
 }
