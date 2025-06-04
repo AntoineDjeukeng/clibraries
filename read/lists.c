@@ -58,38 +58,16 @@ node_t *ft_create_tail(node_t **head, node_t **tail, const char *value, size_t s
 
 
 
-void ft_segment(const char *str, node_t **head, node_t **tail)
-{
-    size_t i = 0;
-    size_t j = 0;
-
-    while (str[i])
-    {
-        if ((str[i] == '\n' && str[i + 1] != '\n') || str[i + 1] == '\0')
-        {
-            ft_create_tail(head, tail, str, j, i + 1);
-            j = i + 1;
-        }
-        i++;
-    }
-}
-// Calculate total length from start node up to (but not including) end node
-size_t calculate_length_to(node_t *start, node_t *end) {
-    size_t total_len = 0;
-    node_t *temp = start;
-    while (temp != end) {
-        total_len += temp->len;
-        temp = temp->next;
-    }
-    return total_len;
-}
 
 // Free nodes from *head up to (but not including) end node, then update *head
 void free_nodes(node_t **head, node_t *end) {
-    node_t *current = *head;
+    node_t *current;
+    node_t *next;
+
+    current = *head;
     while (current != end) {
         free(current->value);
-        node_t *next = current->next;
+        next = current->next;
         free(current);
         current = next;
     }
@@ -98,71 +76,79 @@ void free_nodes(node_t **head, node_t *end) {
 
 // Copy concatenated node values from start up to end into buffer, null-terminate
 void copy_nodes_to_buffer(node_t *start, node_t *end, char *buffer) {
-    size_t pos = 0;
-    for (node_t *current = start; current != end; current = current->next) {
-        for (size_t i = 0; i < current->len; i++) {
-            buffer[pos++] = current->value[i];
+    size_t pos;
+    size_t i;
+    node_t *current;
+
+    pos = 0;
+    current = start;
+    while (current != end) {
+        i = 0;
+        while (i < current->len) {
+            buffer[pos++] = current->value[i++];
         }
+        current = current->next;
     }
     buffer[pos] = '\0';
 }
 
+
 // Combine copy and free into one function
 char *copy_and_free_nodes(node_t **head, node_t *end) {
     size_t total_len;
-
+    node_t *temp;
 
 
     total_len = 0;
-    node_t *temp = *head;
+    temp = *head;
     while (temp != end) {
         total_len += temp->len;
         temp = temp->next;
     }
     if (total_len == 0)
         return NULL;
-
     char *accum_str = malloc(total_len + 1);
     if (!accum_str)
         return NULL;
-
     copy_nodes_to_buffer(*head, end, accum_str);
     free_nodes(head, end);
-
     return accum_str;
 }
 
 // Helper to find next_after_accum node and total length (assumes 'new' flag indicates newline end)
 size_t calculate_accum_length(node_t *start, node_t **next_after_accum) {
-    size_t total_len = 0;
-    node_t *temp = start;
+    size_t total_len;
+    node_t *temp;
 
-    while (temp && !temp->new) {
+    total_len = 0;
+    temp = start;
+    while (temp && !temp->new)
+    {
         total_len += temp->len;
         temp = temp->next;
     }
-
-    if (temp && temp->new) {
+    if (temp && temp->new)
+    {
         total_len += temp->len;
         temp = temp->next;
     }
-
     if (next_after_accum)
         *next_after_accum = temp;
-
     return total_len;
 }
 
 // Main accumulate_until_newline function
-char *accumulate_until_newline(node_t **head) {
+char *accumulate_until_newline(node_t **head)
+{
+    node_t *next_after_accum;
+    size_t total_len;
+
     if (!head || !*head)
         return NULL;
-
-    node_t *next_after_accum = NULL;
-    size_t total_len = calculate_accum_length(*head, &next_after_accum);
+    next_after_accum = NULL;
+    total_len = calculate_accum_length(*head, &next_after_accum);
     if (total_len == 0)
         return NULL;
-
     return copy_and_free_nodes(head, next_after_accum);
 }
 #include <fcntl.h>     // for open
@@ -173,37 +159,75 @@ char *accumulate_until_newline(node_t **head) {
 
 int BUFF_SIZE = 1024;
 
-char *ft_get_next_line(int fd)
-{
+
+
+// Helper: Read from fd and segment into linked list
+// Returns: 
+//   1 if read some data successfully,
+//   0 if EOF,
+//  -1 if error
+int read_and_segment(int fd, node_t **head, node_t **tail) {
+    char buffer[BUFF_SIZE + 1];
+    size_t i;
+    size_t j;
+    ssize_t bytes_read;
+
+    i = 0;
+    j = 0;
+    bytes_read = read(fd, buffer, BUFF_SIZE);
+    if (bytes_read == -1) {
+        perror("Error reading file");
+        return -1;
+    }
+    if (bytes_read == 0)
+        return 0;
+    buffer[bytes_read] = '\0';
+    while (buffer[i])
+    {
+        if ((buffer[i] == '\n' && buffer[i + 1] != '\n') || buffer[i + 1] == '\0')
+        {
+            ft_create_tail(head, tail, buffer, j, i + 1);
+            j = i + 1;
+        }
+        i++;
+    }
+    return 1;
+}
+
+// Helper: Free remaining nodes and reset head/tail
+// Return leftover string if any, else NULL
+char *cleanup_and_return(node_t **head, node_t **tail) {
+    if (*head) {
+        char *leftover = copy_and_free_nodes(head, NULL);
+        *tail = NULL;
+        return leftover;
+    }
+    return NULL;
+}
+
+// Main get next line function
+char *ft_get_next_line(int fd) {
     static node_t *head = NULL;
     static node_t *tail = NULL;
-    char buffer[BUFF_SIZE + 1];
-    ssize_t bytes_read;
-    char *leftover;
-    char *line ;
+    char *line;
 
     while (1) {
         line = accumulate_until_newline(&head);
-        if (line != NULL)
-            return (line);
-        bytes_read = read(fd, buffer, BUFF_SIZE);
-        if (bytes_read == -1) {
-            perror("Error reading file");
+        if (line)
+            return line;
+
+        int read_result = read_and_segment(fd, &head, &tail);
+        if (read_result == -1) { // error
             free_nodes(&head, NULL);
+            tail = NULL;
+            head = NULL;
+            return NULL;
+        }
+        else if (read_result == 0) { // EOF
+            char *leftover = cleanup_and_return(&head, &tail);
             head = tail = NULL;
-            return (NULL);
+            return leftover;
         }
-        else if (bytes_read == 0) 
-        {
-            if (head) {
-                leftover = copy_and_free_nodes(&head, NULL);
-                head = tail = NULL;
-                return (leftover);
-            }
-            return (NULL);
-        }
-        buffer[bytes_read] = '\0';
-        ft_segment(buffer, &head, &tail);
     }
 }
 
