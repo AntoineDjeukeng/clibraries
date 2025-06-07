@@ -1,0 +1,159 @@
+#include <stdio.h>
+#include <stdarg.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include "libft.h"
+
+
+void normalize_flags(flags_t *f) {
+    if (f->plus)
+        f->space = false;
+    if (f->minus)
+        f->zero = false;
+    if (f->precision_specified)
+        f->zero = false;
+    if (f->specifier=='-')
+    {
+        f->plus = false;
+        f->space = false;
+    }
+}
+
+flags_t *ft_find_flags_id(const char *str) {
+    flags_t *flags = malloc(sizeof(flags_t));
+    if (!flags)
+        return NULL;
+    *flags = (flags_t){0};
+    if (*str == '%')
+        str++;
+    while (*str == '+' || *str == ' ' || *str == '-' || *str == '0' || *str == '#') {
+        if (*str == '+') flags->plus = true;
+        else if (*str == ' ') flags->space = true;
+        else if (*str == '-') flags->minus = true;
+        else if (*str == '0') flags->zero = true;
+        else if (*str == '#') flags->hash = true;
+        str++;
+    }
+    while (ft_isdigit(*str)) {
+        flags->width = flags->width * 10 + (*str - '0');
+        str++;
+    }
+    if (*str == '.') {
+        str++;
+        flags->precision_specified = true;
+        flags->precision = 0;
+        while (ft_isdigit(*str)) {
+            flags->precision = flags->precision * 10 + (*str - '0');
+            str++;
+        }
+    }
+    if (ft_strchr("diuxXoscp", *str))
+        flags->specifier = *str;
+    else
+       flags->specifier = '-'; 
+    normalize_flags(flags);
+    return flags;
+}
+
+
+char *str_my_print_id(char *str, int numb) {
+    flags_t *flags = ft_find_flags_id(str);
+   
+
+    char *num_str;
+    char *prec_str;
+    int len= 0;
+    char npp[2];
+    // char prefix = '\0';
+    const char *base = NULL;
+    unsigned int uval = (unsigned int)numb;
+    // char *prefix = NULL;
+    // const char *bin = "01";
+    // const char *oct = "01234567";
+    // const char *dec = "0123456789";
+    // const char *hex_l = "0123456789abcdef";
+    // const char *hex_u = "0123456789ABCDEF";
+    npp[0]= '\0';
+    npp[1]= '\0';
+    switch (flags->specifier)
+    {
+        case 'd':
+        case 'i':
+            base = "0123456789";
+            num_str = ft_itoa_base(numb, base, &len);
+            // free(base);
+            break;
+        case 'u':
+            base = "0123456789";
+            num_str = ft_itoa_base(uval, base, &len);
+            break;
+        case 'o':
+            base = "01234567";
+            num_str = ft_itoa_base(uval, base, &len);
+            if (flags->hash && uval != 0 && num_str[0] != '0')
+                npp[0] = '0';
+            break;
+        case 'x':
+            base = "0123456789abcdef";
+            num_str = ft_itoa_base(uval, base, &len);
+            if (flags->hash && uval != 0)
+            {
+                npp[0] = '0';
+                npp[1] = 'x';
+            }
+            break;
+        case 'X':
+            base = "0123456789ABCDEF";
+            num_str = ft_itoa_base(uval, base, &len);
+            if (flags->hash && uval != 0)
+            {
+                npp[0] = '0';
+                npp[1] = 'X';
+            }
+            break;
+        default:
+            num_str = ft_strdup("?");
+            len = 1;
+
+
+    }
+
+ 
+    // Step 2: Prefix
+    if (numb < 0) npp[0] = '-';
+    else if (flags->plus) npp[0] = '+';
+    else if (flags->space) npp[0] = ' ';
+
+    // Step 3: Precision (pad with '0's)
+    
+
+    
+    if (flags->precision_specified && flags->precision > len) {
+        if(num_str[0]=='-')
+            flags->precision++;
+        prec_str = ft_pad_string(num_str, flags->precision, '0',false);
+        // free(num_str);
+        num_str = prec_str;
+        len = flags->precision;
+    } else if (flags->precision_specified && flags->precision == 0 && numb == 0) {
+        free(num_str);
+        num_str = ft_strdup("");
+        len = 0;
+    }
+    if (npp[0] && num_str[0]!='-') {
+        num_str=ft_pad_string(num_str, len + 1, npp[0],false);
+        len++;
+    }
+    if (flags->width > len) {
+        if (flags->minus) {
+            num_str = ft_pad_string(num_str, flags->width, ' ',true);
+        } else if (flags->zero && !flags->precision_specified) {
+            num_str = ft_pad_string(num_str, flags->width, '0',false);
+        } else {
+            num_str = ft_pad_string(num_str, flags->width, ' ',false);
+        }
+    }
+    free(flags);
+    return num_str;
+}
+
