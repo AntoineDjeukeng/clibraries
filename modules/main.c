@@ -75,45 +75,34 @@ void run_test(const char *desc, const char *format, int value)
 
 int main(void)
 {
-    run_test("Basic %d", "%d", 42);
-    run_test("Basic %i", "%i", 123);
-    run_test("Negative %d", "%d", -42);
-    run_test("Negative %i", "%i", -123);
-    run_test("Zero", "%d", 0);
-    run_test("INT_MAX", "%d", INT_MAX);
-    run_test("INT_MIN", "%d", INT_MIN);
-    run_test("Width 5", "%5d", 42);
-    run_test("Width 5 neg", "%5d", -42);
-    run_test("Precision .5", "%.5d", 42);
-    run_test("Precision .5 neg", "%.5d", -42);
-    run_test("Precision 0 with 0", "%.0d", 0);
-    run_test("Width + Precision", "%8.5d", 42);
-    run_test("Width + Precision neg", "%8.5d", -42);
-    run_test("Zero-padded", "%05d", 42);
-    run_test("Zero-padded neg", "%05d", -42);
-    run_test("Sign +", "%+d", 42);
-    run_test("Sign + neg", "%+d", -42);
-    run_test("Space sign", "% d", 42);
-    run_test("Space sign neg", "% d", -42);
-    run_test("Left justified", "%-5d", 42);
-    run_test("Left justified neg", "%-5d", -42);
-    run_test("Left-justified + zero", "%-05d", 42);  // "42   "
-    run_test("Sign + and space", "%+ d", 42);        // "+42"
-    run_test("Width and plus", "%+5d", 42);          // "  +42"
-    run_test("Width and plus neg", "%+5d", -42);     // "  -42"
-    run_test("Width and space", "% 5d", 42);         // "   42"
-    run_test("Width and space neg", "% 5d", -42);    // "  -42"
-    run_test("Zero + sign", "%+05d", 42);            // "+0042"
-    run_test("Zero + sign neg", "%+05d", -42);       // "-0042"
-    run_test("Precision + sign", "%+.5d", 42);       // "+00042"
-    run_test("Precision + space", "% .5d", 42);      // " 00042"
-    run_test("Width smaller than number", "%2d", 12345); // "12345"
-    run_test("Large width/precision", "%20.15d", 123); // "     00000000000123"
-    run_test("Width + Precision (i)", "%8.5i", 42);
-    run_test("Zero-padded (i)", "%05i", 42);
-    run_test("Sign + (i)", "%+i", 42);
-    run_test("Precision .5 neg", "%.5d", -42);           // should be "-00042"
-    run_test("Width + Precision neg", "%8.5d", -42);     // should be "  -00042"
+
+    printf("\n");
+    run_test("Unsigned basic", "%u", 12345);
+    run_test("Octal basic", "%o", 64);             // "100"
+    run_test("Octal with #", "%#o", 64);           // "0100"
+    run_test("Hex lower", "%x", 255);              // "ff"
+    run_test("Hex upper", "%X", 255);              // "FF"
+    run_test("Hex with #", "%#x", 255);            // "0xff"
+    run_test("Hex with # and upper", "%#X", 255);  // "0XFF"
+    run_test("Hex width", "%8x", 255);             // "     ff"
+    run_test("Hex zero padded", "%08x", 255);      // "000000ff"
+    run_test("Hex width + #", "%#8x", 255);        // "   0xff"
+    run_test("Octal + precision", "%.5o", 10);     // "00012"
+    run_test("Octal zero with #", "%#o", 0);        // expect "0"
+    run_test("Hex zero with #", "%#x", 0);          // expect "0"
+    run_test("Hex upper zero with #", "%#X", 0);    // expect "0"
+    run_test("Unsigned max", "%u", UINT_MAX);
+    run_test("Hex max", "%x", UINT_MAX);
+    run_test("Octal max", "%o", UINT_MAX);
+    run_test("Precision 0 zero unsigned", "%.0u", 0); // expect ""
+    run_test("Precision 0 zero octal", "%.0o", 0);    // expect ""
+    run_test("Zero pad with precision and # octal", "%#08.5o", 64);  // expect "00000100" (no extra 0 prefix)
+    run_test("Zero pad with precision and # hex", "%#010.5x", 255);  // expect "     000ff" or "0x000ff" depending on spec
+    run_test("Width smaller than prefix+num", "%#3x", 15);  // expect "0xf"
+    run_test("Left justify with # octal", "%-#6o", 10);  // expect "012   "
+    run_test("Left justify with # hex", "%-#6x", 10);    // expect "0xa   "
+    run_test("Negative input unsigned", "%u", -1);  // expect UINT_MAX
+    run_test("Negative input hex", "%x", -1);       // expect "ffffffff" (or 64-bit equivalent)
 
     printf("\n");
     return 0;

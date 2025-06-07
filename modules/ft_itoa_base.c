@@ -6,7 +6,7 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 08:09:53 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/06/07 09:30:38 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/06/07 16:09:32 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,25 @@ char	*utoa_base_str(unsigned int n, int is_negative, const char *base,
 	return (res);
 }
 
+char *ft_itoa_base_unsigned(unsigned int num, const char *base, int *length)
+{
+	int base_len = ft_strlen(base);
+	int digits = 1;
+	unsigned int tmp = num;
+
+	if (!is_valid_base(base))
+		return NULL;
+
+	while (tmp >= (unsigned int)base_len)
+	{
+		tmp /= base_len;
+		digits++;
+	}
+
+	*length = digits;
+	return utoa_base_str(num, 0, base, length);
+}
+
 char	*ft_itoa_base(int n, const char *base, int *length)
 {
 	int				is_negative;
@@ -92,3 +111,4 @@ char	*ft_itoa_base(int n, const char *base, int *length)
 	*length = digits + is_negative;
 	return (utoa_base_str(num, is_negative, base, length));
 }
+
