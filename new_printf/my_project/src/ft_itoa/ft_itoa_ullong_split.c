@@ -1,0 +1,56 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_itoa_ullong_split.c                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/18 17:54:03 by adjeuken          #+#    #+#             */
+/*   Updated: 2025/06/19 13:54:19 by adjeuken         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "ft_itoa.h"
+
+static int	count_ull_digits(unsigned long long n)
+{
+	int	len;
+
+	len = 0;
+	if (n == 0)
+		return (1);
+	while (n)
+	{
+		len++;
+		n /= 10;
+	}
+	return (len);
+}
+
+t_number_type	*ft_itoa_ullong_split(unsigned long long n)
+{
+	int				len;
+	t_number_type	*result;
+
+	len = count_ull_digits(n);
+	result = malloc(sizeof(t_number_type));
+	if (!result)
+		return (NULL);
+	result->intpar = malloc(len + 1);
+	if (!result->intpar)
+	{
+		free(result);
+		return (NULL);
+	}
+	result->intpar[len] = '\0';
+	result->intlen = len;
+	result->valide = 1;
+	result->decpart = NULL;
+	result->declen = 0;
+	while (len)
+	{
+		result->intpar[--len] = (n % 10) + '0';
+		n /= 10;
+	}
+	return (result);
+}

@@ -1,15 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-typedef struct node
-{
-    char *value;
-    size_t len;
-    int new;
-    struct node *next;
-} node_t;
+#include "list.h"
 
-// Helper: create a new node from substring value[start:end]
+
 node_t *create_node_from_substring(const char *value, size_t start, size_t end)
 {
     node_t *node;
@@ -26,12 +17,12 @@ node_t *create_node_from_substring(const char *value, size_t start, size_t end)
         free(node);
         return (NULL);
     }
-    node->new = 0;
+    node->newl = 0;
     i=0;
     while ( i < node->len ) {
         node->value[i] = value[start + i];
         if (value[start + i] == '\n')
-            node->new = 1;
+            node->newl = 1;
         i++;
     }
     node->value[node->len] = '\0';
@@ -75,7 +66,8 @@ void free_nodes(node_t **head, node_t *end) {
 }
 
 // Copy concatenated node values from start up to end into buffer, null-terminate
-void copy_nodes_to_buffer(node_t *start, node_t *end, char *buffer) {
+void copy_nodes_to_buffer(node_t *start, node_t *end, char *buffer)
+{
     size_t pos;
     size_t i;
     node_t *current;
@@ -94,9 +86,11 @@ void copy_nodes_to_buffer(node_t *start, node_t *end, char *buffer) {
 
 
 // Combine copy and free into one function
-char *copy_and_free_nodes(node_t **head, node_t *end) {
+char *copy_and_free_nodes(node_t **head, node_t *end) 
+{
     size_t total_len;
     node_t *temp;
+    char *accum_str ;
 
 
     total_len = 0;
@@ -107,7 +101,7 @@ char *copy_and_free_nodes(node_t **head, node_t *end) {
     }
     if (total_len == 0)
         return NULL;
-    char *accum_str = malloc(total_len + 1);
+    accum_str = malloc(total_len + 1);
     if (!accum_str)
         return NULL;
     copy_nodes_to_buffer(*head, end, accum_str);
@@ -116,18 +110,19 @@ char *copy_and_free_nodes(node_t **head, node_t *end) {
 }
 
 // Helper to find next_after_accum node and total length (assumes 'new' flag indicates newline end)
-size_t calculate_accum_length(node_t *start, node_t **next_after_accum) {
+size_t calculate_accum_length(node_t *start, node_t **next_after_accum) 
+{
     size_t total_len;
     node_t *temp;
 
     total_len = 0;
     temp = start;
-    while (temp && !temp->new)
+    while (temp && !temp->newl)
     {
         total_len += temp->len;
         temp = temp->next;
     }
-    if (temp && temp->new)
+    if (temp && temp->newl)
     {
         total_len += temp->len;
         temp = temp->next;
@@ -151,21 +146,7 @@ char *accumulate_until_newline(node_t **head)
         return NULL;
     return copy_and_free_nodes(head, next_after_accum);
 }
-#include <fcntl.h>     // for open
-#include <unistd.h>    // for read, close
-#include <stdio.h>     // for perror, printf
-#include <stdlib.h>    // for malloc, free
-#include <string.h>    // for strlen
 
-int BUFF_SIZE = 1024;
-
-
-
-// Helper: Read from fd and segment into linked list
-// Returns: 
-//   1 if read some data successfully,
-//   0 if EOF,
-//  -1 if error
 int read_and_segment(int fd, node_t **head, node_t **tail) {
     char buffer[BUFF_SIZE + 1];
     size_t i;
@@ -194,42 +175,48 @@ int read_and_segment(int fd, node_t **head, node_t **tail) {
     return 1;
 }
 
-// Helper: Free remaining nodes and reset head/tail
-// Return leftover string if any, else NULL
-char *cleanup_and_return(node_t **head, node_t **tail) {
-    if (*head) {
-        char *leftover = copy_and_free_nodes(head, NULL);
-        *tail = NULL;
+
+char *handle_eof_cleanup(gnl_state_t *state) {
+    char *leftover;
+
+    if (state->head) {
+        leftover = copy_and_free_nodes(&state->head, NULL);
+        state->head = state->tail = NULL;
         return leftover;
     }
     return NULL;
 }
 
-// Main get next line function
-char *ft_get_next_line(int fd) {
-    static node_t *head = NULL;
-    static node_t *tail = NULL;
+char *ft_get_next_line(int fd)
+{
+    static gnl_state_t states[MAX_FD];
     char *line;
+    int result;
 
-    while (1) {
-        line = accumulate_until_newline(&head);
+    if (fd < 0 || fd >= MAX_FD || BUFFER_SIZE <= 0)
+        return NULL;
+    while (1)
+    {
+        line = accumulate_until_newline(&states[fd].head);
         if (line)
             return line;
-
-        int read_result = read_and_segment(fd, &head, &tail);
-        if (read_result == -1) { // error
-            free_nodes(&head, NULL);
-            tail = NULL;
-            head = NULL;
+        result = read_and_segment(fd, &states[fd].head, &states[fd].tail);
+        if (result == -1)
+        {
+            free_nodes(&states[fd].head, NULL);
+            states[fd].head = states[fd].tail = NULL;
             return NULL;
         }
-        else if (read_result == 0) { // EOF
-            char *leftover = cleanup_and_return(&head, &tail);
-            head = tail = NULL;
-            return leftover;
+        else if (result == 0)
+        {
+            return handle_eof_cleanup(&states[fd]);
         }
     }
 }
+
+
+
+
 
 
 // #define BUFF_SIZE 200  // Example fixed buffer size

@@ -9,7 +9,7 @@ gcc -Wall -Wextra -Werror -O0 -g main.c ft_printf.a -o $EXEC
 # Check if compilation succeeded
 if [ $? -eq 0 ]; then
     echo "✅ Compilation successful. Running with Valgrind..."
-    valgrind --leak-check=full --show-leak-kinds=all ./$EXEC
+    valgrind --leak-check=full --show-leak-kinds=all -s ./$EXEC
 else
     echo "❌ Compilation failed."
 fi

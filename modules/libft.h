@@ -45,7 +45,7 @@ char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_utoa_base_str(unsigned int n, int is_negative, const char *base,
 		int *length);
 char *ft_itoa_base_unsigned(unsigned int num, const char *base, int *length);
-
+void print_float(float n, int precision);
 // char *str_my_print_id(char *str, int numb) {
 //     flags_t *flags = ft_find_flags_id(str);
 //     char *num_str = NULL;

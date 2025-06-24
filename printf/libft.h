@@ -5,6 +5,9 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <stdlib.h>
+#define true 1
+#define false 0
+typedef int tf_bool;
 
 #define FLAG_HASH   (1 << 0)
 #define FLAG_ZERO   (1 << 1)

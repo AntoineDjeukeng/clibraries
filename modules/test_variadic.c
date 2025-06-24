@@ -159,81 +159,160 @@ char *str_my_print_id(char *str, int numb) {
 
 
 
-char *str_my_print_uoxX(char *str, int numb) {
-    flags_t *flags = ft_find_flags_id(str);
 
-    char *num_str;
-    char *prec_str;
-    int len = 0;
-    const char *base = NULL;
-    unsigned int uval = (unsigned int)numb;
 
-    switch (flags->specifier)
-    {
-        case 'u':
-            base = "0123456789";
-            num_str = ft_itoa_base_unsigned(uval, base, &len);
-            break;
-        case 'o':
-            base = "01234567";
-            num_str = ft_itoa_base_unsigned(uval, base, &len);
-            break;
-        case 'x':
-            base = "0123456789abcdef";
-            num_str = ft_itoa_base_unsigned(uval, base, &len);
-            break;
-        case 'X':
-            base = "0123456789ABCDEF";
-            num_str = ft_itoa_base_unsigned(uval, base, &len);
-            break;
-        default:
-            num_str = ft_strdup("?");
-            len = 1;
-    }
 
-    // Handle precision
-    if (flags->precision_specified && flags->precision > len) {
-        prec_str = ft_pad_string(num_str, flags->precision, '0', false);
-        num_str = prec_str;
-        len = flags->precision;
-    } else if (flags->precision_specified && flags->precision == 0 && uval == 0) {
-        free(num_str);
-        num_str = ft_strdup("");
-        len = 0;
-    }
 
-    // Handle prefix
-    char prefix[3] = {'\0'};
-    int prefix_len = 0;
-    if (flags->specifier == 'o' && flags->hash && num_str[0] != '0') {
-        prefix[prefix_len++] = '0';
-    } else if ((flags->specifier == 'x' || flags->specifier == 'X') && flags->hash && uval != 0) {
-        prefix[prefix_len++] = '0';
-        prefix[prefix_len++] = (flags->specifier == 'x') ? 'x' : 'X';
-    }
-    prefix[prefix_len] = '\0';
 
-    // Prepend prefix if needed
-    if (prefix_len > 0) {
-        char *tmp = malloc(prefix_len + strlen(num_str) + 1);
-        strcpy(tmp, prefix);
-        strcat(tmp, num_str);
-        free(num_str);
-        num_str = tmp;
-        len += prefix_len;
-    }
 
-    // Handle width
-    if (flags->width > len) {
-        if (flags->minus) {
-            num_str = ft_pad_string(num_str, flags->width, ' ', true);
-        } else if (flags->zero && !flags->precision_specified) {
-            num_str = ft_pad_string(num_str, flags->width, '0', false);
-        } else {
-            num_str = ft_pad_string(num_str, flags->width, ' ', false);
-        }
-    }
+// char *str_my_print_uoxX(char *str, int numb) {
+//     flags_t *flags = ft_find_flags_id(str);
 
-    free(flags);
-    return num_str;
-}
+//     char *num_str;
+//     char *prec_str;
+//     int len = 0;
+//     const char *base = NULL;
+//     unsigned int uval = (unsigned int)numb;
+
+//     switch (flags->specifier)
+//     {
+//         case 'u':
+//             base = "0123456789";
+//             num_str = ft_itoa_base_unsigned(uval, base, &len);
+//             break;
+//         case 'o':
+//             base = "01234567";
+//             num_str = ft_itoa_base_unsigned(uval, base, &len);
+//             break;
+//         case 'x':
+//             base = "0123456789abcdef";
+//             num_str = ft_itoa_base_unsigned(uval, base, &len);
+//             break;
+//         case 'X':
+//             base = "0123456789ABCDEF";
+//             num_str = ft_itoa_base_unsigned(uval, base, &len);
+//             break;
+//         default:
+//             num_str = ft_strdup("?");
+//             len = 1;
+//     }
+
+//     // Handle precision
+//     if (flags->precision_specified && flags->precision > len) {
+//         prec_str = ft_pad_string(num_str, flags->precision, '0', false);
+//         num_str = prec_str;
+//         len = flags->precision;
+//     } else if (flags->precision_specified && flags->precision == 0 && uval == 0) {
+//         free(num_str);
+//         num_str = ft_strdup("");
+//         len = 0;
+//     }
+
+//     // Handle prefix
+//     char prefix[3] = {'\0'};
+//     int prefix_len = 0;
+//     if (flags->specifier == 'o' && flags->hash && num_str[0] != '0') {
+//         prefix[prefix_len++] = '0';
+//     } else if ((flags->specifier == 'x' || flags->specifier == 'X') && flags->hash && uval != 0) {
+//         prefix[prefix_len++] = '0';
+//         prefix[prefix_len++] = (flags->specifier == 'x') ? 'x' : 'X';
+//     }
+//     prefix[prefix_len] = '\0';
+
+//     // Prepend prefix if needed
+//     if (prefix_len > 0) {
+//         char *tmp = malloc(prefix_len + strlen(num_str) + 1);
+//         strcpy(tmp, prefix);
+//         strcat(tmp, num_str);
+//         free(num_str);
+//         num_str = tmp;
+//         len += prefix_len;
+//     }
+
+//     // Handle width
+//     if (flags->width > len) {
+//         if (flags->minus) {
+//             num_str = ft_pad_string(num_str, flags->width, ' ', true);
+//         } else if (flags->zero && !flags->precision_specified) {
+//             num_str = ft_pad_string(num_str, flags->width, '0', false);
+//         } else {
+//             num_str = ft_pad_string(num_str, flags->width, ' ', false);
+//         }
+//     }
+
+//     free(flags);
+//     return num_str;
+// }
+
+
+
+
+
+// char *str_my_print_efgGaA(char *str, double val)
+// {
+//     flags_t *flags = ft_find_flags_id(str);
+//     char *num_str = NULL;
+//     char *prefix = NULL;
+//     int precision = flags->precision_specified ? flags->precision : 6;
+
+//     // Determine the format specifier
+//     switch (flags->specifier)
+//     {
+//         case 'f':
+//         case 'F':
+//             num_str = ft_dtoa_fixed(val, precision); // You need to implement this
+//             break;
+//         case 'e':
+//         case 'E':
+//             num_str = ft_dtoa_exponential(val, precision, flags->specifier == 'E'); // Implement
+//             break;
+//         case 'g':
+//         case 'G':
+//             num_str = ft_dtoa_general(val, precision, flags->specifier == 'G'); // Optional, can use e/f fallback
+//             break;
+//         case 'a':
+//         case 'A':
+//             num_str = ft_dtoa_hex(val, precision, flags->specifier == 'A'); // Optional hex float format
+//             break;
+//         default:
+//             num_str = ft_strdup("?");
+//     }
+
+//     // Optional '+' or ' ' prefix for positive numbers
+//     if (val >= 0.0)
+//     {
+//         if (flags->plus)
+//             prefix = ft_strdup("+");
+//         else if (flags->space)
+//             prefix = ft_strdup(" ");
+//     }
+//     else
+//     {
+//         prefix = ft_strdup(""); // Already has '-' in num_str
+//     }
+
+//     if (prefix)
+//     {
+//         char *tmp = malloc(strlen(prefix) + strlen(num_str) + 1);
+//         strcpy(tmp, prefix);
+//         strcat(tmp, num_str);
+//         free(num_str);
+//         free(prefix);
+//         num_str = tmp;
+//     }
+
+//     // Handle width and padding
+//     int len = strlen(num_str);
+//     if (flags->width > len)
+//     {
+//         if (flags->minus)
+//             num_str = ft_pad_string(num_str, flags->width, ' ', true);
+//         else if (flags->zero && !flags->precision_specified)
+//             num_str = ft_pad_string(num_str, flags->width, '0', false);
+//         else
+//             num_str = ft_pad_string(num_str, flags->width, ' ', false);
+//     }
+
+//     free(flags);
+//     return num_str;
+// }

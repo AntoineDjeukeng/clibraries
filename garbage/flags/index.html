@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>printf Flags Logic Table</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1em;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #f5f5f5;
+    }
+    .yes {
+      color: green;
+      font-weight: bold;
+    }
+    .no {
+      color: red;
+      font-weight: bold;
+    }
+    .warn {
+      color: orange;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1><code>printf</code> Flags Logic Table</h1>
+
+  <h2>Flag Descriptions</h2>
+  <ul>
+    <li><strong>#</strong> – Alternate form</li>
+    <li><strong>0</strong> – Zero-padded</li>
+    <li><strong>-</strong> – Left-aligned</li>
+    <li><strong>space</strong> – Space before positive numbers</li>
+    <li><strong>+</strong> – Always show sign</li>
+    <li><strong>'</strong> – Thousands separator (locale)</li>
+    <li><strong>I</strong> – Alternative digits (locale)</li>
+  </ul>
+
+  <h2>Legend</h2>
+  <ul>
+    <li><span class="yes">✔</span> – Supported</li>
+    <li><span class="no">✘</span> – Not supported or ignored</li>
+    <li><span class="warn">⚠</span> – Locale-dependent or conditional</li>
+  </ul>
+
+  <h2>Logic Table</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Flag \\ Specifier</th>
+        <th>%d / %i</th>
+        <th>%u</th>
+        <th>%x / %X</th>
+        <th>%o</th>
+        <th>%f / %F</th>
+        <th>%e / %E</th>
+        <th>%g / %G</th>
+        <th>%s</th>
+        <th>%c</th>
+        <th>%p</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>#</td>         <td class="no">✘</td><td class="no">✘</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="no">✘</td><td class="no">✘</td><td class="no">✘</td></tr>
+      <tr><td>0</td>         <td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="no">✘</td><td class="no">✘</td><td class="yes">✔</td></tr>
+      <tr><td>-</td>         <td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td></tr>
+      <tr><td>space</td>     <td class="yes">✔</td><td class="no">✘</td><td class="no">✘</td><td class="no">✘</td><td class="no">✘</td><td class="no">✘</td><td class="no">✘</td><td class="no">✘</td><td class="no">✘</td><td class="no">✘</td></tr>
+      <tr><td>+</td>         <td class="yes">✔</td><td class="no">✘</td><td class="no">✘</td><td class="no">✘</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="no">✘</td><td class="no">✘</td><td class="no">✘</td></tr>
+      <tr><td>'</td>         <td class="warn">⚠</td><td class="warn">⚠</td><td class="no">✘</td><td class="no">✘</td><td class="warn">⚠</td><td class="warn">⚠</td><td class="warn">⚠</td><td class="no">✘</td><td class="no">✘</td><td class="no">✘</td></tr>
+      <tr><td>I</td>         <td class="warn">⚠</td><td class="warn">⚠</td><td class="no">✘</td><td class="no">✘</td><td class="no">✘</td><td class="no">✘</td><td class="no">✘</td><td class="no">✘</td><td class="no">✘</td><td class="no">✘</td></tr>
+    </tbody>
+  </table>
+</body>
+</html>
