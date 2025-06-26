@@ -227,6 +227,7 @@ void ft_flag_percent(flags_t *f) {
     if (f->zero)
         printf("zero-pad ");
 }
+
 void print_flags(const char *format, flags_t *f) {
     if (f->specifier == 0) {
         printf("Format: %-10s → Invalid specifier\n", format);
