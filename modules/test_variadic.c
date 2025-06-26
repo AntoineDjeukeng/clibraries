@@ -19,6 +19,48 @@ void normalize_flags(flags_t *f) {
     }
 }
 
+void normalize_flags(flags_t *f) {
+    // '+' overrides space
+    if (f->plus)
+        f->space = false;
+
+    // '-' disables zero-padding
+    if (f->minus)
+        f->zero = false;
+
+    // precision disables zero-padding for numeric conversions
+    if (f->precision_specified && ft_strchr("diuxX", f->specifier))
+        f->zero = false;
+
+    // '+' and space are ignored for unsigned conversions
+    if (ft_strchr("uxX", f->specifier)) {
+        f->plus = false;
+        f->space = false;
+    }
+
+    // '#' only valid for x/X
+    if (!ft_strchr("xX", f->specifier))
+        f->hash = false;
+
+    // '+' and space ignored for c, s, p, %
+    if (ft_strchr("csp%", f->specifier)) {
+        f->plus = false;
+        f->space = false;
+    }
+
+    // precision only applies to: diuxX, s
+    if (f->precision_specified && !ft_strchr("diuxXs", f->specifier)) {
+        f->precision_specified = false;
+        f->precision = 0;
+    }
+
+    // zero-padding ignored for c, s, p
+    if (ft_strchr("csp", f->specifier)) {
+        f->zero = false;
+    }
+}
+
+
 flags_t *ft_find_flags_id(const char *str) {
     flags_t *flags = malloc(sizeof(flags_t));
     if (!flags)

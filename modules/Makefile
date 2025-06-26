@@ -22,7 +22,7 @@ clean:
 # Clean up object files and library
 fclean: clean
 	rm -f $(NAME)
-
+# +
 # Rebuild everything
 re: fclean all
 
