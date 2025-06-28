@@ -1,0 +1,50 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_itoa_hex_split.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/18 17:46:38 by adjeuken          #+#    #+#             */
+/*   Updated: 2025/06/28 20:35:07 by adjeuken         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "ft_prinf.h"
+
+static int	count_unsigned_digits(unsigned int n)
+{
+	int	len;
+
+	len = 0;
+	if (n == 0)
+		return (1);
+	while (n)
+	{
+		len++;
+		n /= 16;
+	}
+	return (len);
+}
+
+char	*ft_itoa_hex_split(unsigned int n, char uppercase)
+{
+	int			len;
+	const char	*base;
+	char		*result;
+
+	len = count_unsigned_digits(n);
+	base = "0123456789abcdef";
+	if (uppercase == 'X')
+		base = "0123456789ABCDEF";
+	result = malloc((len + 1) * sizeof(char));
+	if (!result)
+		return (NULL);
+	result[len] = '\0';
+	while (len)
+	{
+		result[--len] = base[n % 16];
+		n /= 16;
+	}
+	return (result);
+}

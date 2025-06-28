@@ -144,7 +144,8 @@ void ft_flag_p(flags_t *f) {
 
 
 
-void ft_flag_id(flags_t *f, int value) {
+void ft_flag_id(flags_t *f, int value) 
+{
     char num_buf[32];
     int abs_val = value < 0 ? -value : value;
     int is_negative = value < 0;
@@ -228,7 +229,8 @@ void ft_flag_percent(flags_t *f) {
         printf("zero-pad ");
 }
 
-void print_flags(const char *format, flags_t *f) {
+void print_flags(const char *format, flags_t *f)
+{
     if (f->specifier == 0) {
         printf("Format: %-10s → Invalid specifier\n", format);
         return;
