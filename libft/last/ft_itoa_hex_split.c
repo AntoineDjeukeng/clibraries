@@ -6,11 +6,11 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 17:46:38 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/06/28 20:35:07 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/06/29 16:07:54 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_prinf.h"
+#include "ft_printf.h"
 
 static int	count_unsigned_digits(unsigned int n)
 {

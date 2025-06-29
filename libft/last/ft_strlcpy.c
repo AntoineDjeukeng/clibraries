@@ -6,13 +6,11 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 15:54:20 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/06/28 20:32:46 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/06/29 16:13:26 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_prinf.h"
-
-
+#include "ft_printf.h"
 
 size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 {

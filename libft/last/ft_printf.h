@@ -1,14 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_prinf.h                                         :+:      :+:    :+:   */
+/*   ft_printf.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/28 19:19:14 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/06/28 20:26:30 by adjeuken         ###   ########.fr       */
+/*   Created: 2025/06/29 16:01:33 by adjeuken          #+#    #+#             */
+/*   Updated: 2025/06/29 16:01:34 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #pragma once
 #include <math.h>
@@ -16,7 +17,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>   
+#include <unistd.h>
 
 typedef enum t_bool
 {
@@ -81,24 +82,25 @@ typedef struct s_list_state
 
 void				ft_my_printf(const char *format, ...);
 char				*ft_strndup(const char *s, size_t n);
-char	*ft_strdup(char *s);
-char	*ft_substr(char const *s, unsigned int start, size_t len);
-int	ft_strlen(const char *str);
-char	*ft_print_uint(t_flags *f, unsigned int value);
+char				*ft_strdup(char *s);
+char				*ft_substr(char const *s, unsigned int start, size_t len);
+int					ft_strlen(const char *str);
+char				*ft_print_uint(t_flags *f, unsigned int value);
 
-size_t	ft_strlcpy(char *dst, const char *src, size_t size);
-char	*ft_itoa_uint_split(unsigned int n);
-t_flags	*ft_find_flags_id(const char *str);
-char	*ft_strchr(const char *s, int c);
-int	ft_isdigit(int c);
-char	*ft_pad_string(char *str, int width, char pad_char, t_bool left_align);
-char	*ft_itoa_int(int n);
-char	*ft_itoa_hex_split(unsigned int n, char uppercase);
-void	*ft_calloc(size_t nmemb, size_t size);
-char	*ft_itoa_uint_split(unsigned int n);
-char	*ft_print_int(t_flags *f, int value);
-char	*ft_flag_percent(t_flags *f);
-char	*ft_print_hex(t_flags *f, unsigned int value);
-char	*ft_print_ptr(t_flags *f, void *value);
-char	*ft_format_str_or_char(t_flags *f, void *value);
-void	parse_printf_string(t_state *state);
+size_t				ft_strlcpy(char *dst, const char *src, size_t size);
+char				*ft_itoa_uint_split(unsigned int n);
+t_flags				*ft_find_flags_id(const char *str);
+char				*ft_strchr(const char *s, int c);
+int					ft_isdigit(int c);
+char				*ft_pad_string(char *str, int width, char pad_char,
+						t_bool left_align);
+char				*ft_itoa_int(int n);
+char				*ft_itoa_hex_split(unsigned int n, char uppercase);
+void				*ft_calloc(size_t nmemb, size_t size);
+char				*ft_itoa_uint_split(unsigned int n);
+char				*ft_print_int(t_flags *f, int value);
+char				*ft_flag_percent(t_flags *f);
+char				*ft_print_hex(t_flags *f, unsigned int value);
+char				*ft_print_ptr(t_flags *f, void *value);
+char				*ft_format_str_or_char(t_flags *f, void *value);
+void				parse_printf_string(t_state *state);

@@ -6,11 +6,11 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 16:30:59 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/06/28 20:33:07 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/06/29 16:07:41 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_prinf.h"
+#include "ft_printf.h"
 
 void	append_to_list(t_state *state, int end, t_bool type)
 {
@@ -75,23 +75,23 @@ void	parse_printf_string(t_state *state)
 		append_to_list(state, i, t_false);
 }
 
-int build_output(t_printf *node)
+int	build_output(t_printf *node)
 {
-    int numb_arg;
+	int	numb_arg;
 
-    numb_arg=0;
-    while (node)
-    {
-        if(node->type && node->include)
-        {
-            node->flags=malloc(sizeof(t_flags));
-            if(node->flags)
-            {
-                node->flags=ft_find_flags_id((const char *)node->input);
-                numb_arg++;
-            }
-        }
-        node = node->next;
-    }
-    return (numb_arg);
+	numb_arg = 0;
+	while (node)
+	{
+		if (node->type && node->include)
+		{
+			node->flags = malloc(sizeof(t_flags));
+			if (node->flags)
+			{
+				node->flags = ft_find_flags_id((const char *)node->input);
+				numb_arg++;
+			}
+		}
+		node = node->next;
+	}
+	return (numb_arg);
 }

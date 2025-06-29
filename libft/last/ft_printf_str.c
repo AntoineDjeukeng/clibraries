@@ -6,24 +6,23 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 14:18:57 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/06/28 20:32:44 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/06/29 16:12:07 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_prinf.h"
+#include "ft_printf.h"
 
-static char *ft_handel_c(char value)
+static char	*ft_handel_c(char value)
 {
-    char	*str;
-    
-    str = malloc(2);
-    if (!str)
-        return (NULL);
-    str[0] = (char)(uintptr_t)value;
-    str[1] = '\0';
-    return str; 
-}
+	char	*str;
 
+	str = malloc(2);
+	if (!str)
+		return (NULL);
+	str[0] = (char)(uintptr_t)value;
+	str[1] = '\0';
+	return (str);
+}
 
 char	*ft_format_str_or_char(t_flags *f, void *value)
 {
@@ -31,7 +30,7 @@ char	*ft_format_str_or_char(t_flags *f, void *value)
 	char	*s;
 
 	if (f->specifier == 'c')
-        str=ft_handel_c((char)(uintptr_t)value);
+		str = ft_handel_c((char)(uintptr_t)value);
 	else if (f->specifier == 's')
 	{
 		s = (char *)value;

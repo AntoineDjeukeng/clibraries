@@ -6,11 +6,11 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 12:51:26 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/06/28 20:34:58 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/06/29 16:11:47 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_prinf.h"
+#include "ft_printf.h"
 
 static char	*build_number_str(char *num_part, int value, int prec_zeros,
 		t_flags *f)

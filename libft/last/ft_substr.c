@@ -6,11 +6,11 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 10:05:47 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/06/28 20:32:07 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/06/29 16:13:45 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_prinf.h"
+#include "ft_printf.h"
 
 static char	*ft_strncpy_substr(const char *s, unsigned int start,
 		size_t copy_len)

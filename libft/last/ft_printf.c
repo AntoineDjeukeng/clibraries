@@ -6,11 +6,12 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 01:02:14 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/06/28 20:32:25 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/06/29 16:12:25 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_prinf.h"
+#include "ft_printf.h"
+
 
 static void	process_format_node(t_printf *node, va_list *args)
 {

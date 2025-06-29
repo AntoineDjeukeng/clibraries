@@ -6,11 +6,11 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 01:52:57 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/06/28 20:33:01 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/06/29 16:15:06 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_prinf.h"
+#include "ft_printf.h"
 
 static int	pad_negative_with_zeros(char *str, char *result, int padding)
 {

@@ -6,14 +6,11 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 13:34:44 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/06/28 20:32:41 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/06/29 16:12:14 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_prinf.h"
-
-
-
+#include "ft_printf.h"
 
 char	*ft_flag_u(t_flags *f, char *num_part, int prec_zeros, int total_len)
 {

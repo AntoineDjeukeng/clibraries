@@ -6,12 +6,11 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 07:28:00 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/06/28 20:33:48 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/06/29 16:07:10 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_prinf.h"
-
+#include "ft_printf.h"
 
 void	*ft_calloc(size_t nmemb, size_t size)
 {
