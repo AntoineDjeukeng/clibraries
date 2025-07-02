@@ -58,17 +58,46 @@ const char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
+typedef struct t_str_line
+{
+    int len;
+    char *str_line;
+    struct t_str_line *next;
+    int end;
+} t_str_line;
+
+
+
+typedef struct t_state
+{
+    int fd;
+    struct  t_str_line *line_head;
+    struct  t_str_line *line_tail;
+    struct  t_str_line *rest_head;
+    struct  t_str_line *rest_tail;
+}t_state;
+
+int ft_analy_buffer ( t_state *state, const char *buffer, size_t len)
+{
+    
+}
+
+
+
+
 char *ft_get_line(int fd, int bufsize) 
 {
     static char *keep = NULL;
     const char *pos;
     char *line;
     size_t len;
+    char *tmp;
 
     if (!keep) 
         keep = ft_calloc(1, 1);
     if (!keep) 
         return NULL;
+
     keep = read_until_newline(fd, keep, bufsize);
     if (!keep) 
         return NULL;
@@ -78,7 +107,19 @@ char *ft_get_line(int fd, int bufsize)
         len = pos - keep + 1;
     else
         len = ft_strlen(keep);
+
     line = ft_strndup(keep, len);
-    keep = ft_strdup(keep + len);
+    if (!line)
+        return NULL;
+    tmp = keep;
+    keep = ft_strdup(tmp + len);
+    free(tmp);
+
+    if (!keep)
+    {
+        free(line);
+        return NULL;
+    }
+
     return line;
 }

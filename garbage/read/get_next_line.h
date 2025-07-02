@@ -8,7 +8,7 @@
 
 
 #ifndef BUFFER_SIZE
-#define BUFFER_SIZE 32
+#define BUFFER_SIZE 2
 #endif
 
 const char	*ft_strchr(const char *s, int c);
