@@ -6,7 +6,7 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 14:28:22 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/06/29 16:06:40 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/01 00:07:13 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ t_flags	*ft_find_flags_id(const char *str)
 	if (!flags)
 		return (NULL);
 	*flags = (t_flags){0};
+	flags->c_empty = 0;
 	if (*str == '%')
 		str++;
 	return (ft_h_flags(flags, str));

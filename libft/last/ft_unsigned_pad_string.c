@@ -6,7 +6,7 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 01:52:57 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/01 23:38:48 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/06/29 16:15:06 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,23 +30,25 @@ static int	pad_negative_with_zeros(char *str, char *result, int padding)
 	return (i);
 }
 
-static char	*ft_right_align(char *str, int n, char c, int length)
+static char	*ft_right_align(char *str, int n, char c)
 {
+	int		length;
 	int		i;
 	int		j;
 	char	*result;
 
+	length = ft_strlen(str);
 	result = ft_calloc(n + 1, sizeof(char));
 	if (!result)
 		return (NULL);
+	if (n < length)
+		n = length;
 	i = 0;
 	j = 0;
 	if ((str[0] == '-' || str[0] == '+') && c == '0')
 		i = pad_negative_with_zeros(str, result, n - length);
 	else
 	{
-		if (length == 0)
-			length = 1;
 		while (i < n - length)
 			result[i++] = c;
 		while (i < n && str[j])
@@ -68,15 +70,16 @@ static char	*ft_left_align(char *str, int n, char c)
 	i = 0;
 	if (!result)
 		return (NULL);
-	if (length == 0)
-		length = 1;
 	while (i < length && i < n)
 	{
 		result[i] = str[i];
 		i++;
 	}
 	while (i < n)
-		result[i++] = c;
+	{
+		result[i] = c;
+		i++;
+	}
 	result[n] = '\0';
 	free(str);
 	return (result);
@@ -103,16 +106,8 @@ static char	*ft_left_align(char *str, int n, char c)
  */
 char	*ft_pad_string(char *str, int width, char pad_char, t_bool left_align)
 {
-	int	len;
-
 	if (left_align)
 		return (ft_left_align(str, width, pad_char));
 	else
-	{
-		len = ft_strlen(str);
-		if (width < len)
-			return (ft_right_align(str, len, pad_char, len));
-		else
-			return (ft_right_align(str, width, pad_char, len));
-	}
+		return (ft_right_align(str, width, pad_char));
 }

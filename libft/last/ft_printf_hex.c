@@ -5,117 +5,85 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/24 13:34:59 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/06/29 16:11:38 by adjeuken         ###   ########.fr       */
+/*   Created: 2025/06/30 12:01:51 by adjeuken          #+#    #+#             */
+/*   Updated: 2025/07/02 00:41:24 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static char	*ft_flag_h(t_flags *f, char *num_part, int prec_zeros,
-		unsigned int value)
+char	*hex_apply_precision_and_hash(char *num, t_flags *f)
 {
-	int		i;
-	char	*final;
-
-	i = 0;
-	final = malloc(ft_strlen(num_part) + prec_zeros + 1);
-	if (!final)
-		return (NULL);
-	while (prec_zeros-- > 0)
-		final[i++] = '0';
-	ft_strlcpy(final + i, num_part, ft_strlen(num_part) + 1);
-	if (f->hash)
-	{
-		if (value != 0)
-		{
-			if (f->specifier == 'x')
-				final = ft_pad_string(final, ft_strlen(final) + 1, 'x',
-						f->minus);
-			else
-				final = ft_pad_string(final, ft_strlen(final) + 1, 'X',
-						f->minus);
-			final = ft_pad_string(final, ft_strlen(final) + 1, '0', f->minus);
-		}
-	}
-	return (final);
-}
-
-static char	*ft_adjust(char *final, int i, int j, char *tmp)
-{
-	int	m;
-
-	m = 0;
-	tmp[j++] = '0';
-	tmp[j++] = final[i];
-	while (final[m])
-	{
-		if (m == i - 1 || m == i)
-		{
-			m++;
-			continue ;
-		}
-		tmp[j++] = final[m++];
-	}
-	tmp[j] = '\0';
-	free(final);
-	return (tmp);
-}
-
-static char	*ft_hex_zero_padding(char *final, t_flags *f)
-{
-	int		i;
-	int		j;
+	char	*prec;
+	char	*prefixed;
 	char	*tmp;
 
-	i = 0;
-	j = 0;
-	while (final[i])
+	if (f->precision_specified)
+		prec = temp_pad_string(num, f->precision, '0', 0);
+	else
+		prec = ft_strdup(num);
+	if (!prec)
+		return (NULL);
+	if (!(f->hash && ft_strcmp(prec, "0") != 0))
+		return (prec);
+	tmp = temp_pad_string(prec, strlen(prec) + 1, f->specifier, t_false);
+	if (!tmp)
 	{
-		if (final[i] == f->specifier && i > 0 && final[i - 1] == '0')
-			break ;
-		i++;
+		free(prec);
+		return (NULL);
 	}
-	if (i > 1 && final[i - 1] == '0')
+	prefixed = temp_pad_string(tmp, strlen(prec) + 2, '0', t_false);
+	free(prec);
+	free(tmp);
+	return (prefixed);
+}
+
+char	*ft_print_hex_h(t_flags *f, char *num)
+{
+	int		len;
+	char	*result;
+
+	len = strlen(num);
+	if (f->width <= len)
+		return (ft_strdup(num));
+	if (f->zero && !f->precision_specified && !f->minus)
+		result = temp_pad_string(num, f->width, '0', t_false);
+	else
+		result = temp_pad_string(num, f->width, ' ', f->minus);
+	return (result);
+}
+
+char	*ft_print_hex_and_return_len(t_flags *f, unsigned int value)
+{
+	char	*num;
+	char	*tmp;
+	char	*final;
+	char	*empty;
+
+	if (value == 0 && f->precision_specified && f->precision == 0)
 	{
-		tmp = malloc(ft_strlen(final) + 1);
-		if (!tmp)
-			return (NULL);
-		while (final[j] == ' ')
-		{
-			tmp[j] = final[j];
-			j++;
-		}
-		return (ft_adjust(final, i, j, tmp));
+		empty = ft_strdup("");
+		final = temp_pad_string(empty, f->width, ' ', f->minus);
+		free(empty);
+		return (final);
 	}
+	num = ft_itoa_hex_split(value, f->specifier);
+	tmp = hex_apply_precision_and_hash(num, f);
+	free(num);
+	final = ft_print_hex_h(f, tmp);
+	free(tmp);
 	return (final);
 }
 
-char	*ft_print_hex(t_flags *f, unsigned int value)
+int	ft_print_hex(t_flags *f, va_list *args)
 {
-	char	*num_part;
-	char	*final;
-	int		prec_zeros;
-	int		len;
+	char	*final_str;
+	int		printed_len;
 
-	prec_zeros = 0;
-	num_part = ft_itoa_hex_split(value, f->specifier);
-	if (!num_part)
-		return (NULL);
-	len = ft_strlen(num_part);
-	if (f->precision_specified && f->precision > len)
-		prec_zeros = f->precision - len;
-	final = ft_flag_h(f, num_part, prec_zeros, value);
-	free(num_part);
-	if (!final)
-		return (NULL);
-	if (f->width > (int)ft_strlen(final))
-	{
-		if (f->zero && !f->precision_specified && !f->minus)
-			final = ft_pad_string(final, f->width, '0', f->minus);
-		else
-			final = ft_pad_string(final, f->width, ' ', f->minus);
-	}
-	final = ft_hex_zero_padding(final, f);
-	return (final);
+	final_str = ft_print_hex_and_return_len(f, va_arg(*args, unsigned int));
+	if (!final_str)
+		return (-1);
+	printed_len = (int)write(1, final_str, strlen(final_str));
+	free(final_str);
+	return (printed_len);
 }

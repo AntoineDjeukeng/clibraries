@@ -6,13 +6,13 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 21:07:03 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/06/29 16:11:53 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/01 22:46:04 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-char	*ft_flag_percent(t_flags *f)
+char	*ft_flag_percent_and_return_len(t_flags *f)
 {
 	char	*result;
 
@@ -29,4 +29,17 @@ char	*ft_flag_percent(t_flags *f)
 			result = ft_pad_string(result, f->width, ' ', f->minus);
 	}
 	return (result);
+}
+
+int	ft_flag_percent(t_flags *f)
+{
+	char	*final_str;
+	int		printed_len;
+
+	final_str = ft_flag_percent_and_return_len(f);
+	if (!final_str)
+		return (-1);
+	printed_len = (int)write(1, final_str, strlen(final_str));
+	free(final_str);
+	return (printed_len);
 }

@@ -6,7 +6,7 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 12:51:26 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/06/29 16:11:47 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/02 01:40:51 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,54 +16,86 @@ static char	*build_number_str(char *num_part, int value, int prec_zeros,
 		t_flags *f)
 {
 	char	sign_char;
-	int		len;
+	int		num_len;
+	int		total_len;
 	char	*final;
-	int		i;
+	char	*p;
 
-	sign_char = '\0';
-	len = ft_strlen(num_part) + prec_zeros;
-	i = 0;
-	if (value < 0)
-		sign_char = '-';
-	else if (f->plus)
-		sign_char = '+';
-	else if (f->space)
-		sign_char = ' ';
+	sign_char = get_sign_char(value, f);
+	num_len = ft_strlen(num_part);
+	total_len = num_len + prec_zeros;
 	if (sign_char)
-		len += 1;
-	final = malloc(len + 1);
+		total_len = total_len + 1;
+	final = malloc(total_len + 1);
 	if (!final)
 		return (NULL);
+	p = final;
 	if (sign_char)
-		final[i++] = sign_char;
+		*p++ = sign_char;
 	while (prec_zeros-- > 0)
-		final[i++] = '0';
-	ft_strlcpy(final + i, num_part, ft_strlen(num_part) + 1);
+		*p++ = '0';
+	ft_strlcpy(p, num_part, num_len + 1);
 	return (final);
 }
 
-char	*ft_print_int(t_flags *f, int value)
+char	*handle_zero_precision_and_width(t_flags *f, int value, char *num_part)
+{
+	char	*empty;
+	char	*padded;
+	char	*final;
+
+	final = NULL;
+	final = NULL;
+	if (value == 0 && f->precision_specified && f->precision == 0)
+	{
+		empty = ft_strdup("");
+		if (!empty)
+			return (NULL);
+		if (f->width > 0)
+		{
+			padded = temp_pad_string(empty, f->width, ' ', f->minus);
+			free(empty);
+			return (padded);
+		}
+		return (empty);
+	}
+	if (f->precision_specified && f->precision > ft_strlen(num_part))
+		final = build_number_str(num_part, value, f->precision
+				- ft_strlen(num_part), f);
+	else
+		final = build_number_str(num_part, value, 0, f);
+	return (final);
+}
+
+char	*ft_print_int_and_return_len(t_flags *f, int value)
 {
 	char	*num_part;
 	char	*final;
-	int		prec_zeros;
 
 	num_part = ft_itoa_int(value);
-	prec_zeros = 0;
 	if (!num_part)
 		return (NULL);
-	if (f->precision_specified && f->precision > (int)ft_strlen(num_part))
-		prec_zeros = f->precision - ft_strlen(num_part);
-	final = build_number_str(num_part, value, prec_zeros, f);
+	final = handle_zero_precision_and_width(f, value, num_part);
 	free(num_part);
 	if (!final)
 		return (NULL);
-	if (f->width > (int)ft_strlen(final))
-	{
-		if (f->zero && !f->precision_specified && !f->minus)
-			final = ft_pad_string(final, f->width, '0', f->minus);
-		else
-			final = ft_pad_string(final, f->width, ' ', f->minus);
-	}
+	if (f->width > (int)ft_strlen(final) && f->zero && !f->precision_specified
+		&& !f->minus)
+		final = ft_pad_string(final, f->width, '0', f->minus);
+	else if (f->width > (int)ft_strlen(final))
+		final = ft_pad_string(final, f->width, ' ', f->minus);
 	return (final);
+}
+
+int	ft_print_int(t_flags *f, va_list *args)
+{
+	char	*final_str;
+	int		printed_len;
+
+	final_str = ft_print_int_and_return_len(f, va_arg(*args, int));
+	if (!final_str)
+		return (-1);
+	printed_len = (int)write(1, final_str, strlen(final_str));
+	free(final_str);
+	return (printed_len);
 }

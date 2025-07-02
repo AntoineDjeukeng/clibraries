@@ -6,10 +6,9 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 16:01:33 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/06/29 16:01:34 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/02 01:39:58 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #pragma once
 #include <math.h>
@@ -59,6 +58,7 @@ typedef struct t_flags
 	t_bool			precision_specified;
 	char			specifier;
 	void			*value;
+	int				c_empty;
 }					t_flags;
 
 typedef struct s_printf
@@ -67,6 +67,7 @@ typedef struct s_printf
 	t_bool			type;
 	char			*input;
 	char			*output;
+	int				output_len;
 	t_bool			include;
 	struct s_printf	*next;
 }					t_printf;
@@ -79,13 +80,15 @@ typedef struct s_list_state
 	int				start;
 	int				end;
 }					t_state;
+int					ft_putnchr(char c, int n);
+void				*ft_memcpy(void *dest, const void *src, size_t n);
+int					ft_printf(const char *format, ...);
 
-void				ft_my_printf(const char *format, ...);
 char				*ft_strndup(const char *s, size_t n);
 char				*ft_strdup(char *s);
 char				*ft_substr(char const *s, unsigned int start, size_t len);
 int					ft_strlen(const char *str);
-char				*ft_print_uint(t_flags *f, unsigned int value);
+int					ft_print_uint(t_flags *f, va_list *args);
 
 size_t				ft_strlcpy(char *dst, const char *src, size_t size);
 char				*ft_itoa_uint_split(unsigned int n);
@@ -98,9 +101,16 @@ char				*ft_itoa_int(int n);
 char				*ft_itoa_hex_split(unsigned int n, char uppercase);
 void				*ft_calloc(size_t nmemb, size_t size);
 char				*ft_itoa_uint_split(unsigned int n);
-char				*ft_print_int(t_flags *f, int value);
-char				*ft_flag_percent(t_flags *f);
-char				*ft_print_hex(t_flags *f, unsigned int value);
-char				*ft_print_ptr(t_flags *f, void *value);
-char				*ft_format_str_or_char(t_flags *f, void *value);
+int					ft_print_int(t_flags *f, va_list *args);
+int					ft_flag_percent(t_flags *f);
+int					ft_print_hex(t_flags *f, va_list *args);
+int					ft_print_ptr(t_flags *f, va_list *args);
+int					ft_format_str_or_char(t_flags *f, va_list *args);
 void				parse_printf_string(t_state *state);
+int					ft_strcmp(const char *s1, const char *s2);
+char				*temp_pad_string(const char *str, int t_len, char pad,
+						t_bool align);
+int					ft_vprintf(const char *format, va_list **args);
+char				*temp_pad_string(const char *str, int t_len, char pad,
+						t_bool align);
+char				get_sign_char(int value, t_flags *f);

@@ -6,11 +6,22 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 17:46:38 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/06/29 16:08:01 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/02 01:39:40 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+
+char	get_sign_char(int value, t_flags *f)
+{
+	if (value < 0)
+		return ('-');
+	if (f->plus)
+		return ('+');
+	if (f->space)
+		return (' ');
+	return ('\0');
+}
 
 static void	fill_number_digits(char *str, int n, int len)
 {

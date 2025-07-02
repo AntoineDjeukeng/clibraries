@@ -6,46 +6,100 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 14:18:57 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/06/29 16:12:07 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/01 23:23:18 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static char	*ft_handel_c(char value)
+int	ft_handle_c(char value, t_flags *f)
 {
-	char	*str;
+	int		padding;
+	char	pad_char;
+	int		width;
 
-	str = malloc(2);
-	if (!str)
-		return (NULL);
-	str[0] = (char)(uintptr_t)value;
-	str[1] = '\0';
-	return (str);
-}
-
-char	*ft_format_str_or_char(t_flags *f, void *value)
-{
-	char	*str;
-	char	*s;
-
-	if (f->specifier == 'c')
-		str = ft_handel_c((char)(uintptr_t)value);
-	else if (f->specifier == 's')
+	width = 1;
+	pad_char = ' ';
+	if (f->width > 1)
+		width = f->width;
+	padding = width - 1;
+	if (f->zero && !f->minus)
+		pad_char = '0';
+	if (!f->minus)
 	{
-		s = (char *)value;
-		if (!s)
-			return (ft_strdup("(null)"));
-		if (f->precision_specified)
-			str = ft_substr(s, 0, f->precision);
-		else
-			str = ft_strdup(s);
-		if (!str)
-			return (NULL);
+		ft_putnchr(pad_char, padding);
+		write(1, &value, 1);
 	}
 	else
-		return (NULL);
-	if (f->width > (int)strlen(str))
-		str = ft_pad_string(str, f->width, ' ', f->minus);
-	return (str);
+	{
+		write(1, &value, 1);
+		ft_putnchr(pad_char, padding);
+	}
+	return (width);
+}
+
+static char	*handle_null_str_with_precision(const char *s,
+		int precision_specified, int precision)
+{
+	int		len;
+	char	*res;
+
+	if (s == NULL && precision_specified && precision < 6)
+		return (ft_strdup(""));
+	if (s == NULL && precision_specified && precision >= 6)
+		precision = 6;
+	if (s == NULL && !precision_specified)
+		return (ft_strdup("(null)"));
+	if (s == NULL)
+		s = "(null)";
+	if (precision_specified && precision >= 0)
+	{
+		len = strlen(s);
+		if (precision < len)
+			len = precision;
+		res = malloc(len + 1);
+		if (!res)
+			return (NULL);
+		ft_memcpy(res, s, len);
+		res[len] = '\0';
+		return (res);
+	}
+	else
+		return (ft_strdup((char *)s));
+}
+
+int	ft_handle_s(char *s, t_flags *f)
+{
+	char	*str;
+	int		printed_chars;
+	char	pad_char;
+	int		len;
+	int		padding;
+
+	printed_chars = 0;
+	pad_char = ' ';
+	str = handle_null_str_with_precision(s, f->precision_specified,
+			f->precision);
+	if (!str)
+		return (-1);
+	len = (int)strlen(str);
+	padding = 0;
+	if (f->width > len)
+		padding = f->width - len;
+	if (!f->minus)
+		printed_chars += ft_putnchr(pad_char, padding);
+	printed_chars += write(1, str, len);
+	if (f->minus)
+		printed_chars += ft_putnchr(pad_char, padding);
+	free(str);
+	return (printed_chars);
+}
+
+int	ft_format_str_or_char(t_flags *f, va_list *args)
+{
+	if (f->specifier == 'c')
+		return (ft_handle_c(va_arg(*args, int), f));
+	else if (f->specifier == 's')
+		return (ft_handle_s(va_arg(*args, char *), f));
+	return (0);
 }

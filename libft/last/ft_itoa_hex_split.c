@@ -6,23 +6,21 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 17:46:38 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/06/29 16:07:54 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/02 01:45:39 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static int	count_unsigned_digits(unsigned int n)
+static int	ft_count_hex_digits(unsigned int n)
 {
 	int	len;
 
-	len = 0;
-	if (n == 0)
-		return (1);
-	while (n)
+	len = 1;
+	while (n >= 16)
 	{
-		len++;
 		n /= 16;
+		len++;
 	}
 	return (len);
 }
@@ -33,17 +31,17 @@ char	*ft_itoa_hex_split(unsigned int n, char uppercase)
 	const char	*base;
 	char		*result;
 
-	len = count_unsigned_digits(n);
 	base = "0123456789abcdef";
 	if (uppercase == 'X')
 		base = "0123456789ABCDEF";
+	len = ft_count_hex_digits(n);
 	result = malloc((len + 1) * sizeof(char));
 	if (!result)
 		return (NULL);
 	result[len] = '\0';
-	while (len)
+	while (len--)
 	{
-		result[--len] = base[n % 16];
+		result[len] = base[n % 16];
 		n /= 16;
 	}
 	return (result);
