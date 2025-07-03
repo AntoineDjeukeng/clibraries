@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 09:41:21 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/03 11:24:20 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/03 11:29:57 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 void	ft_n_stplit(t_state_split *state)
 {
@@ -64,16 +64,13 @@ char	*ft_consume_line(t_state_split *state)
 	return (line);
 }
 
-static int	ft_init_state(t_state_split **state_ptr, int fd)
+static int	ft_init_state(t_state_split **state_ptr_array, int fd)
 {
 	t_state_split	*state;
 
-	state = *state_ptr;
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || fd >= MAX_FD || BUFFER_SIZE <= 0)
 		return (0);
-	if (state && state->fd != fd)
-		ft_cleanup(state_ptr, 1);
-	if (!*state_ptr)
+	if (state_ptr_array[fd] == NULL)
 	{
 		state = malloc(sizeof(t_state_split));
 		if (!state)
@@ -87,31 +84,33 @@ static int	ft_init_state(t_state_split **state_ptr, int fd)
 			free(state);
 			return (0);
 		}
-		*state_ptr = state;
+		state_ptr_array[fd] = state;
 	}
 	return (1);
 }
 
 char	*get_next_line(int fd)
 {
-	static t_state_split	*state = NULL;
+	static t_state_split	*states[MAX_FD] = {NULL};
+	t_state_split			*state;
 	char					*line;
 
-	if (!ft_init_state(&state, fd))
+	if (!ft_init_state(states, fd))
 		return (NULL);
+	state = states[fd];
 	ft_n_stplit(state);
 	if (!state || !state->head || !state->head->str)
 	{
-		ft_cleanup(&state, 1);
+		ft_cleanup(&states[fd], 1);
 		return (NULL);
 	}
 	line = ft_consume_line(state);
 	if (!line)
 	{
-		ft_cleanup(&state, 1);
+		ft_cleanup(&states[fd], 1);
 		return (NULL);
 	}
 	if (!state->head)
-		ft_cleanup(&state, 1);
+		ft_cleanup(&states[fd], 1);
 	return (line);
 }

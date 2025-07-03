@@ -1,21 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/03 09:41:50 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/03 11:27:21 by adjeuken         ###   ########.fr       */
+/*   Created: 2025/07/03 10:09:01 by adjeuken          #+#    #+#             */
+/*   Updated: 2025/07/03 11:32:19 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
+
 # include <fcntl.h>
 # include <stdint.h>
 # include <stdlib.h>
 # include <unistd.h>
+
+# define MAX_FD 1024
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 2
