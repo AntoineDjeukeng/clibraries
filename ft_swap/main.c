@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
+/*   By: adjeuken <adjeuken@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/06 15:02:04 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/09 07:22:21 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/09 14:57:46 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -267,36 +267,73 @@ int main(void)
             target_index++;
         ft_add_to_stack(&a, arr[i], target_index); // current_index = i
     }
-
+	a.min = size; // Set min to the size of the stack
 
     ft_print_stack(&a);
-    
-    while (a.head->target_index!=0)
-    {
-        vsmart_pb(&a,&b);
-    }
-    r(&a);
-    while (a.head->target_index!=1)
-    {
-        vsmart_pb(&a,&b);
-    }
-    r(&a);
-    while (a.head->target_index!=1)
-    {
-        vsmart_pb(&a,&b);
-    }
-    r(&a);
+
+
+	int index = 0;
+
+	int index0 =a.head->target_index;
+	r(&a);
+	index = index0;
+	while (a.head && a.head->target_index != index0 )
+	{
+		if(a.head->target_index != index +1)
+			vsmart_pb(&a, &b);
+		else
+		{
+			index = a.head->target_index;
+			rr(&a);
+		}
+	}
+
+	// while (a.head && ((b.min == -1) || (a.head->target_index != 0))  )
+	// {
+
+	//     if (a.head)
+	//     {
+	//         while (a.head && a.head->target_index != index)
+	// 		{
+	//             vsmart_pb(&a, &b);
+	// 			if(a.head && a.head->target_index+1 == b.min)
+	// 				vsmart_pa(&a, &b);
+	// 		}
+
+	//         r(&a);
+	//     }
+
+	// 	index++;
+
+	// 	ft_print_stack(&a);
+	// }
+
+    // while (a.head->target_index!=0)
+    // {
+    //     vsmart_pb(&a,&b);
+    // }
+    // r(&a);
+    // while (a.head->target_index!=1)
+    // {
+    //     vsmart_pb(&a,&b);
+    // }
+    // r(&a);
+    // while (a.head->target_index!=1)
+    // {
+    //     vsmart_pb(&a,&b);
+    // }
+    // r(&a);
     ft_print_stack(&a);
     ft_print_stack(&b);
 
-    
-    // printf("the count from front is %d\n",ft_min_distance(&b, a.head->target_index));
+
+    // printf("the count from front is %d\n",ft_min_distance(&b, a.head->target_indemx));
 
 
 
-    
 
-    
+
+
 
     // Cleanup
     ft_free_stack(&a);

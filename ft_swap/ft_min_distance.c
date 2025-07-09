@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_min_distance.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
+/*   By: adjeuken <adjeuken@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 06:52:12 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/09 07:32:11 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/09 19:44:36 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,13 +73,37 @@ void	vsmart_pb(t_stack *a, t_stack *b)
 {
 	int	from_haed;
 	int	from_tail;
-
+	int findex;
+	findex = a->head->target_index;
 	if (!a || !a->head)
 		return ;
-	if (b->head)
+
+	if(b && b->min=a->head->target_index+1)
 	{
 		from_haed = get_insert_pos_from_head(b, a->head->target_index);
 		from_tail = get_insert_pos_from_tail(b, a->head->target_index);
+		if (from_haed <= from_tail)
+		{
+			while (from_haed-- > 0)
+				r(b);
+		}
+		else
+		{
+			while (from_tail-- > 0)
+				rr(b);
+		}
+		while ()
+		{
+			/* code */
+		}
+		
+
+
+	}
+	if (b->head)
+	{
+		from_haed = get_insert_pos_from_head(b, findex);
+		from_tail = get_insert_pos_from_tail(b, findex);
 		if (from_haed <= from_tail)
 		{
 			while (from_haed-- > 0)
@@ -94,4 +118,42 @@ void	vsmart_pb(t_stack *a, t_stack *b)
 	if (b->min > a->head->target_index || b->min == -1)
 		b->min = a->head->target_index;
 	p(b, a);
+}
+
+
+void	vsmart_pa(t_stack *a, t_stack *b)
+{
+	int	from_haed;
+	int	from_tail;
+
+	if (!b || !b->head)
+		return ;
+
+
+	from_haed = get_insert_pos_from_head(b, b->min);
+	from_tail = get_insert_pos_from_tail(b, b->min);
+	if (a->head)
+	{
+		if (from_haed <= from_tail)
+		{
+			printf("\n -%d- \n",from_haed);
+			while (from_haed-- >= 0)
+				r(b);
+		}
+		else
+		{
+			printf("\n -%d- \n",from_tail);
+			while (from_tail-- > 0)
+				rr(b);
+		}
+		while (b->head && b->head->target_index == a->head->target_index+1)
+		{
+			p(a, b);
+			printf("\n ll-%d- \n",2);
+			a->min = b->head->next->target_index;
+			rr(a);
+		}
+
+
+	}
 }
