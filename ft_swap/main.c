@@ -6,7 +6,7 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/06 15:02:04 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/08 07:11:46 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/09 07:22:21 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,50 +230,7 @@ void	print_array(int arr[], int size)
         printf("[%d]: %d\n", i, arr[i]);
 }
 
-void smart_pb(t_stack *a, t_stack *b)
-{
-    if (!a || !a->head)
-        return;
 
-    int target = a->head->target_index;
-    t_node *current = b->head;
-    int rotations = 0;
-
-    // Step 1: find the correct insert position
-    while (current)
-    {
-        int curr = current->target_index;
-        int next = current->next ? current->next->target_index : b->head->target_index;
-
-        // if target lies between current and next (in order)
-        if ((target > curr && target < next) || 
-            (curr > next && (target > curr || target < next)))
-        {
-            break;
-        }
-
-        current = current->next;
-        rotations++;
-        if (rotations >= b->size)
-            break;
-    }
-
-    // Step 2: rotate b to correct place
-    if (rotations <= b->size / 2)
-    {
-        while (rotations-- > 0)
-            r(b);
-    }
-    else
-    {
-        rotations = b->size - rotations;
-        while (rotations-- > 0)
-            rr(b);
-    }
-
-    // Step 3: push to b
-    p(b, a);
-}
 
 // #include "main.h"
 void	ft_border1(t_stack *b, int border[4])
@@ -283,6 +240,11 @@ void	ft_border1(t_stack *b, int border[4])
     border[2] = (b->tail && b->tail->prev) ? b->tail->prev->target_index : -1;
     border[3] = b->tail ? b->tail->target_index : -1;
 }
+
+
+
+
+
 int main(void)
 {
     t_stack a = {NULL, NULL, -1,'a', 0, {0, 0, 0, 0, 0, 0}};
@@ -306,39 +268,33 @@ int main(void)
         ft_add_to_stack(&a, arr[i], target_index); // current_index = i
     }
 
-    // Push some nodes to B
-    // p(&b, &a); // A -> B
-    // p(&b, &a);
-    // p(&b, &a);
 
-    // printf("the shortest distance to 0 is %d",ft_smart_push(&a,0));
     ft_print_stack(&a);
     
     while (a.head->target_index!=0)
     {
-        smart_pb(&a,&b);
+        vsmart_pb(&a,&b);
     }
     r(&a);
-        
-    ft_print_stack(&a);
-    ft_print_stack(&b);
-    smart_pb(&a,&b);
-    ft_print_stack(&b);
-    // while (a.head->target_index!=1)
-    // {
-    //     smart_pb(&a,&b);
-    // }
-    
-    
-    // while (a.head->target_index!=2)
-    // {
-    //     smart_pb(&a,&b);
-    // }
-    
-
+    while (a.head->target_index!=1)
+    {
+        vsmart_pb(&a,&b);
+    }
+    r(&a);
+    while (a.head->target_index!=1)
+    {
+        vsmart_pb(&a,&b);
+    }
+    r(&a);
     ft_print_stack(&a);
     ft_print_stack(&b);
 
+    
+    // printf("the count from front is %d\n",ft_min_distance(&b, a.head->target_index));
+
+
+
+    
 
     
 

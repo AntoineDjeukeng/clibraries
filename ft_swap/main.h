@@ -42,4 +42,6 @@ void	ft_swap_int(int *a, int *b);
 void	ft_quicksort(int arr[], int low, int high);
 int ft_smart_push_h(t_stack *a, int target_position);
 void ft_smart_push(t_stack *a, t_stack *b);
+int	ft_min_distance(t_stack *b, int ch);
+void vsmart_pb(t_stack *a, t_stack *b);
 #endif // MAIN_H

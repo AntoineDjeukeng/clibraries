@@ -3,7 +3,7 @@ NAME = push_swap
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 
-SRC = hach_sorting.c main.c ft_quicksort.c ft_swap_int.c
+SRC = hach_sorting.c  main.c ft_quicksort.c ft_swap_int.c ft_min_distance.c
 OBJ = $(SRC:.c=.o)
 FT_PRINTF_LIB = ft_printf/libftprintf.a
 
