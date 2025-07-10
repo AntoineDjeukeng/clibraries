@@ -45,4 +45,5 @@ void ft_smart_push(t_stack *a, t_stack *b);
 int	ft_min_distance(t_stack *b, int ch);
 void vsmart_pb(t_stack *a, t_stack *b);
 void	vsmart_pa(t_stack *a, t_stack *b);
+void	rsmart_pb( t_stack *b);
 #endif // MAIN_H

@@ -153,8 +153,7 @@ void ft_print_stack(t_stack *stack)
     ft_printf("Stack %c (Top → Bottom):\n", stack->name);
     while (current)
     {
-        ft_printf("[val: %d, tgt: %d]",
-            current->value,
+        ft_printf(" %d",
             current->target_index);
         if (current->next)
             ft_printf(" → ");
@@ -199,7 +198,7 @@ int ft_smart_push_b(t_stack *a, int target_position)
     {
         short_d++;
         tmp=tmp->next;
-        
+
     }
     short_ind=0;
     tmp=a->tail;
@@ -207,7 +206,7 @@ int ft_smart_push_b(t_stack *a, int target_position)
     {
         short_ind++;
         tmp=tmp->prev;
-        
+
     }
     if(short_d>=short_ind)
         return short_d;
