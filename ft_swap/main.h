@@ -1,9 +1,12 @@
-#ifndef MAIN_H
-#define MAIN_H
-
+#pragma once
 // #include "stack/stack.h"
 #include "ft_printf/ft_printf.h"
 #include <stdio.h>
+
+typedef struct s_insert_pos {
+	int from_head;
+	int from_tail;
+} t_insert_pos;
 
 typedef struct s_node
 {
@@ -17,6 +20,7 @@ typedef struct s_stack
 {
 	t_node			*head;
 	t_node			*tail;
+	int 	n;
 	int             min;
 	char			name;
 	int				size;
@@ -46,4 +50,5 @@ int	ft_min_distance(t_stack *b, int ch);
 void vsmart_pb(t_stack *a, t_stack *b);
 void	vsmart_pa(t_stack *a, t_stack *b);
 void	rsmart_pb( t_stack *b);
-#endif // MAIN_H
+t_insert_pos get_insert_pos(t_stack *b, int ch);
+
