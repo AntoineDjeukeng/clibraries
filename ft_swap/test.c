@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct s_node 
+typedef struct s_node
 {
     int             value;
     int             index;
