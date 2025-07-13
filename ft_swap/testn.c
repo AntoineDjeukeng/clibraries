@@ -1,17 +1,37 @@
-#include "push_swap.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <limits.h>
+
+#define MAX_SIZE 200000
+
+typedef struct Node {
+    int value;
+    struct Node* next;
+} Node;
+
+typedef struct Stack {
+    Node* a;
+    Node* b;
+    char* ops[MAX_SIZE];
+    int op_count;
+    int size;
+    int keys[MAX_SIZE];
+    int indexes[MAX_SIZE];
+    int index_size;
+} Stack;
 
 // Create a new node
-Node* new_node(int value,int target) {
+Node* new_node(int value) {
     Node* node = (Node*)malloc(sizeof(Node));
     node->value = value;
-    node->r_value=target;
     node->next = NULL;
     return node;
 }
 
 // Append node at tail (used only in init)
-void append(Node** head, int value,int target) {
-    Node* node = new_node(value,target);
+void append(Node** head, int value) {
+    Node* node = new_node(value);
     if (*head == NULL) {
         *head = node;
     } else {
@@ -60,8 +80,84 @@ void simple_sort(int* arr, int size) {
     }
 }
 
+// Build index map for values in stack
+void indexify(Stack* s, int* values, int count) {
+    int unique[MAX_SIZE];
+    int u_size = 0;
+    for (int i = 0; i < count; i++) {
+        if (!contains(unique, u_size, values[i])) {
+            unique[u_size++] = values[i];
+        }
+    }
+    simple_sort(unique, u_size);
+    for (int i = 0; i < u_size; i++) {
+        s->keys[i] = unique[i];
+        s->indexes[i] = i;
+    }
+    s->index_size = u_size;
+}
 
+// Push: pop from src top, push to dst top, log operation
+void push(Node** src, Node** dst, Stack* s, const char* name) {
+    if (*src == NULL) return;
 
+    Node* node = *src;
+    *src = node->next;
+    node->next = *dst;
+    *dst = node;
+
+    s->ops[s->op_count++] = strdup(name);
+}
+
+// Swap first two nodes of stack s, log operation
+void swap(Node** s, Stack* stack, const char* name) {
+    if (*s == NULL || (*s)->next == NULL) return;
+
+    Node* first = *s;
+    Node* second = first->next;
+
+    first->next = second->next;
+    second->next = first;
+    *s = second;
+
+    stack->ops[stack->op_count++] = strdup(name);
+}
+
+// Rotate: move head to tail, log operation
+void rotate(Node** s, Stack* stack, const char* name) {
+    if (*s == NULL || (*s)->next == NULL) return;
+
+    Node* head = *s;
+    Node* tail = head;
+    while (tail->next != NULL)
+        tail = tail->next;
+
+    *s = head->next;
+    head->next = NULL;
+    tail->next = head;
+
+    stack->ops[stack->op_count++] = strdup(name);
+}
+
+// Reverse rotate: move tail to head, log operation
+void reverse_rotate(Node** s, Stack* stack, const char* name) {
+    if (*s == NULL || (*s)->next == NULL) return;
+
+    Node* prev = NULL;
+    Node* tail = *s;
+
+    while (tail->next != NULL) {
+        prev = tail;
+        tail = tail->next;
+    }
+    prev->next = NULL;
+    tail->next = *s;
+    *s = tail;
+
+    stack->ops[stack->op_count++] = strdup(name);
+}
+
+// Stack-specific operation wrappers
 void ra(Stack* s) { rotate(&(s->a), s, "ra"); }
 void rb(Stack* s) { rotate(&(s->b), s, "rb"); }
 void rra(Stack* s) { reverse_rotate(&(s->a), s, "rra"); }
@@ -71,52 +167,81 @@ void sb(Stack* s) { swap(&(s->b), s, "sb"); }
 void pa(Stack* s) { push(&(s->b), &(s->a), s, "pa"); }
 void pb(Stack* s) { push(&(s->a), &(s->b), s, "pb"); }
 
-void ft_create_node(Node** head, int value, int index) {
-    Node* node = (Node*)malloc(sizeof(Node));
-    node->value = index;
-    node->r_value= value;
-    node->next = NULL;
-    if (*head == NULL)
-        *head = node;
-    else {
-        Node* cur = *head;
-        while (cur->next != NULL)
-            cur = cur->next;
-        cur->next = node;
+// Rotate both stacks a and b simultaneously, log "rr" once
+void rr(Stack* s) {
+    if (s->a && s->b) {
+        rotate(&(s->a), s, "ra");
+        rotate(&(s->b), s, "rb");
+        s->op_count -= 2; // remove ra and rb logs
+        s->ops[s->op_count++] = strdup("rr");
     }
 }
 
+// Reverse rotate both stacks a and b simultaneously, log "rrr" once
+void rrr(Stack* s) {
+    if (s->a && s->b) {
+        reverse_rotate(&(s->a), s, "rra");
+        reverse_rotate(&(s->b), s, "rrb");
+        s->op_count -= 2; // remove rra and rrb logs
+        s->ops[s->op_count++] = strdup("rrr");
+    }
+}
 
-
-Stack* init_stack(int* values, int count) 
-{
-    int tmp[count];
-    int i;
-    int target;
-    Stack *s;
-
-    s = (Stack*)malloc(sizeof(Stack));
+// Initialize Stack with values in stack a, indexify keys
+Stack* init_stack(int* values, int count) {
+    Stack* s = (Stack*)malloc(sizeof(Stack));
     s->a = NULL;
     s->b = NULL;
     s->op_count = 0;
     s->size = count;
-    i = 0;
-    for (int i = 0; i < count; i++)
-        tmp[i] = values[i++];
+    s->index_size = 0;
 
-    ft_quicksort(tmp, 0, count - 1);
     for (int i = 0; i < count; i++) {
-        int target = 0;
-        while (target < count && tmp[target] != values[i])
-            target++;
-        ft_create_node(&s->a, values[i], target);
+        append(&(s->a), values[i]);
     }
+
+    indexify(s, values, count);
     return s;
 }
 
 #include <stdio.h>
 
+// void print_state_to_file(Stack* s, const char* filename) {
+//     FILE* fp = fopen(filename, "w");
+//     if (!fp) {
+//         perror("Failed to open file");
+//         return;
+//     }
 
+//     fprintf(fp, "Stack a: ");
+//     Node* curr = s->a;
+//     while (curr) {
+//         fprintf(fp, "%d ", curr->value);
+//         curr = curr->next;
+//     }
+
+//     fprintf(fp, "\nStack b: ");
+//     curr = s->b;
+//     while (curr) {
+//         fprintf(fp, "%d ", curr->value);
+//         curr = curr->next;
+//     }
+
+//     fprintf(fp, "\nIndexed map:\n");
+//     for (int i = 0; i < s->index_size; i++) {
+//         fprintf(fp, "  %d => %d\n", s->keys[i], s->indexes[i]);
+//     }
+
+//     fprintf(fp, "Operations performed: ");
+//     for (int i = 0; i < s->op_count; i++) {
+//         fprintf(fp, "%s ", s->ops[i]);
+//     }
+//     fprintf(fp, "\n");
+
+//     fclose(fp);
+// }
+
+// Helper to get length of linked list
 int list_length(Node* head) {
     int len = 0;
     while (head) {
@@ -196,6 +321,39 @@ void rotate_to_top(Stack* s, char stack_name, int idx) {
     }
 }
 
+// // Rotate both stacks to minimize moves: positive = rotate, negative = reverse rotate
+void rotate_both(Stack* s, int a_rot, int b_rot) {
+    while (a_rot > 0 && b_rot > 0) {
+        rr(s);
+        a_rot--;
+        b_rot--;
+    }
+    while (a_rot > 0) {
+        ra(s);
+        a_rot--;
+    }
+    while (b_rot > 0) {
+        rb(s);
+        b_rot--;
+    }
+    while (a_rot < 0 && b_rot < 0) {
+        rrr(s);
+        a_rot++;
+        b_rot++;
+    }
+    while (a_rot < 0) {
+        rra(s);
+        a_rot++;
+    }
+    while (b_rot < 0) {
+        rrb(s);
+        b_rot++;
+    }
+}
+
+
+
+
 
 #include <limits.h>  // for INT_MAX
 #include <stdlib.h>  // for abs()
@@ -257,8 +415,41 @@ void move_element(Stack* s) {
     pa(s);
 }
 
-void sort(Stack* s)
-{
+void sort(Stack* s) {
+
+    int len = list_length(s->a);
+    int* values = malloc(sizeof(int) * len);
+    Node* cur = s->a;
+    for (int i = 0; i < len; i++) {
+        values[i] = cur->value;
+        cur = cur->next;
+    }
+
+    // Map values to indexes using s->keys and s->indexes
+    int* indexed_values = malloc(sizeof(int) * len);
+    for (int i = 0; i < len; i++) {
+        int val = values[i];
+        // Find index corresponding to val
+        int index_val = 0;
+        for (int j = 0; j < s->index_size; j++) {
+            if (s->keys[j] == val) {
+                index_val = s->indexes[j];
+                break;
+            }
+        }
+        indexed_values[i] = index_val;
+    }
+
+    // Free old list a and replace with new list with indexed values
+    free_list(s->a);
+    s->a = NULL;
+    for (int i = 0; i < len; i++) {
+        append(&(s->a), indexed_values[i]);
+    }
+    free(values);
+    free(indexed_values);
+
+    // Set chunk size based on size n
     int n = s->size;
     int chunk_size = (n > 100) ? 50 : 20;
 
@@ -277,6 +468,7 @@ void sort(Stack* s)
         }
     }
 
+    // Push all elements back from b to a using move_element
     while (s->b != NULL) {
         move_element(s);
     }
