@@ -1,0 +1,170 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_hande_input_output.c                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/13 05:18:00 by adjeuken          #+#    #+#             */
+/*   Updated: 2025/07/22 14:10:46 by adjeuken         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "push_swap.h"
+
+void	ft_create_node(Node **head, int value, int index)
+{
+	Node	*node;
+	Node	*cur;
+
+	node = (Node *)malloc(sizeof(Node));
+	node->value = index;
+	node->r_value = value;
+	node->next = NULL;
+	if (*head == NULL)
+		*head = node;
+	else
+	{
+		cur = *head;
+		while (cur->next != NULL)
+			cur = cur->next;
+		cur->next = node;
+	}
+}
+
+void	move_element(Stack *s)
+{
+	t_move_data	m;
+
+	if (s->b == NULL)
+		return ;
+	m.min_moves = INT_MAX;
+	m.best_i = -1;
+	m.b_len = list_length(s->b);
+	m.a_len = list_length(s->a);
+	m.i = 0;
+	while (m.i < m.b_len)
+	{
+		evaluate_move(s, &m);
+		if (m.moves < m.min_moves)
+		{
+			m.min_moves = m.moves;
+			m.best_i = m.i;
+			m.best_val = m.val;
+			m.best_a_rot = m.a_rot;
+			m.best_b_rot = m.b_rot;
+		}
+		m.i++;
+	}
+	rotate_both(s, m.best_a_rot, m.best_b_rot);
+	pa(s);
+}
+
+t_bool	is_sorted_and_unique(int *values, int count)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (i < count - 1)
+	{
+		if (values[i] >= values[i + 1])
+			return (t_false);
+		i++;
+	}
+	i = 0;
+	while (i < count - 1)
+	{
+		j = i + 1;
+		while (j < count)
+		{
+			if (values[i] == values[j])
+				return (t_false);
+			j++;
+		}
+		i++;
+	}
+	return (t_true);
+}
+
+
+
+
+
+void	evaluate_move(Stack *s, t_move_data *m)
+{
+	m->val = value_at(s->b, m->i);
+	m->target_pos = get_target_position(s, m->val);
+	if (m->target_pos <= m->a_len / 2)
+		m->a_rot = m->target_pos;
+	else
+		m->a_rot = m->target_pos - m->a_len;
+	if (m->i <= m->b_len / 2)
+		m->b_rot = m->i;
+	else
+		m->b_rot = m->i - m->b_len;
+	if (m->a_rot < 0)
+		m->abs_a = -m->a_rot;
+	else
+		m->abs_a = m->a_rot;
+	if (m->b_rot < 0)
+		m->abs_b = -m->b_rot;
+	else
+		m->abs_b = m->b_rot;
+	if (m->abs_a > m->abs_b)
+		m->moves = m->abs_a;
+	else
+		m->moves = m->abs_b;
+}
+
+void	init_stack(Stack *s, int *values)
+{
+	int	*tmp;
+	int	i;
+	int	target;
+
+	i = 0;
+	tmp = malloc(s->size * sizeof(int));
+	if (!tmp)
+		return ;
+	while (i < s->size)
+	{
+		tmp[i] = values[i];
+		i++;
+	}
+	ft_quicksort(tmp, 0, s->size - 1);
+	i = 0;
+	while (i < s->size)
+	{
+		target = 0;
+		while (target < s->size && tmp[target] != values[i])
+			target++;
+		ft_create_node(&s->a, values[i], target);
+		i++;
+	}
+	free(tmp);
+}
+
+// you have to fix the chunck size (50)
+void	sort(Stack *s)
+{
+	int	i;
+	int	a_front;
+
+	i = 0;
+	while (s->a != NULL)
+	{
+		a_front = s->a->value;
+		if (a_front <= i + 50)
+		{
+			pb(s);
+			if (a_front > i)
+				rb(s);
+			i++;
+		}
+		else
+			ra(s);
+	}
+	while (s->b != NULL)
+		move_element(s);
+}
