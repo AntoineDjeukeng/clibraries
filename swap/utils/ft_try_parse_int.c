@@ -6,12 +6,11 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 09:46:34 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/22 09:47:06 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/23 17:27:59 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../push_swap.h"
-
 
 static int	ft_skip_whitespace_and_sign(const char *str, int *index, int *sign)
 {

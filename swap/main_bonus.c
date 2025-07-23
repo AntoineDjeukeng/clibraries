@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   main_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/23 13:50:19 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/23 17:48:45 by adjeuken         ###   ########.fr       */
+/*   Created: 2025/07/23 17:13:38 by adjeuken          #+#    #+#             */
+/*   Updated: 2025/07/23 17:49:45 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ int	main(int argc, char **argv)
 {
 	int		*values;
 	int		count;
+	char	*line;
 	t_stack	*s;
 
 	s = ft_stack_setup(argc, argv, &values, &count);
@@ -90,9 +91,14 @@ int	main(int argc, char **argv)
 	s->op_count = 0;
 	s->size = count;
 	init_stack(s, values);
-	sort(s);
-	bring_smallest_to_top(s);
-	print_ops(s);
+	line = get_next_line(0);
+	while (line)
+	{
+		apply_operation(line, s);
+		free(line);
+		line = get_next_line(0);
+	}
+	ft_check_results(s);
 	cleanup(s);
 	free(values);
 	return (0);

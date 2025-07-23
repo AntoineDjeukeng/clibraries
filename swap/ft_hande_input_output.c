@@ -6,18 +6,18 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 05:18:00 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/22 14:10:46 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/23 17:51:34 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	ft_create_node(Node **head, int value, int index)
+void	ft_create_node(t_node **head, int value, int index)
 {
-	Node	*node;
-	Node	*cur;
+	t_node	*node;
+	t_node	*cur;
 
-	node = (Node *)malloc(sizeof(Node));
+	node = (t_node *)malloc(sizeof(t_node));
 	node->value = index;
 	node->r_value = value;
 	node->next = NULL;
@@ -32,7 +32,7 @@ void	ft_create_node(Node **head, int value, int index)
 	}
 }
 
-void	move_element(Stack *s)
+void	move_element(t_stack *s)
 {
 	t_move_data	m;
 
@@ -87,11 +87,7 @@ t_bool	is_sorted_and_unique(int *values, int count)
 	return (t_true);
 }
 
-
-
-
-
-void	evaluate_move(Stack *s, t_move_data *m)
+void	evaluate_move(t_stack *s, t_move_data *m)
 {
 	m->val = value_at(s->b, m->i);
 	m->target_pos = get_target_position(s, m->val);
@@ -117,7 +113,7 @@ void	evaluate_move(Stack *s, t_move_data *m)
 		m->moves = m->abs_b;
 }
 
-void	init_stack(Stack *s, int *values)
+void	init_stack(t_stack *s, int *values)
 {
 	int	*tmp;
 	int	i;
@@ -143,28 +139,4 @@ void	init_stack(Stack *s, int *values)
 		i++;
 	}
 	free(tmp);
-}
-
-// you have to fix the chunck size (50)
-void	sort(Stack *s)
-{
-	int	i;
-	int	a_front;
-
-	i = 0;
-	while (s->a != NULL)
-	{
-		a_front = s->a->value;
-		if (a_front <= i + 50)
-		{
-			pb(s);
-			if (a_front > i)
-				rb(s);
-			i++;
-		}
-		else
-			ra(s);
-	}
-	while (s->b != NULL)
-		move_element(s);
 }

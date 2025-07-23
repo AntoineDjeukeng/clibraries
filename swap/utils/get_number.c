@@ -26,23 +26,24 @@ int	ft_is_unique(int *array, int size, int value)
 	return (1);
 }
 
-int ft_is_sorted(int *array, int size)
+int	ft_is_sorted(int *array, int size)
 {
-    int i = 0;
-    int j;
+	int	i;
+	int	j;
 
-    while (i < size - 1)
-    {
-        j = i + 1;
-        while (j < size)
-        {
-            if (array[i] > array[j])
-                return 0;
-            j++;
-        }
-        i++;
-    }
-    return 1;
+	i = 0;
+	while (i < size - 1)
+	{
+		j = i + 1;
+		while (j < size)
+		{
+			if (array[i] > array[j])
+				return (0);
+			j++;
+		}
+		i++;
+	}
+	return (1);
 }
 
 static int	ft_input_error(void)

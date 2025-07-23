@@ -6,13 +6,13 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 14:09:30 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/13 20:21:01 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/23 17:37:52 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-int	value_at(Node *head, int idx)
+int	value_at( t_node *head, int idx)
 {
 	int	i;
 
@@ -28,7 +28,7 @@ int	value_at(Node *head, int idx)
 		return (INT_MIN);
 }
 
-int	list_length(Node *head)
+int	list_length( t_node *head)
 {
 	int	len;
 
@@ -41,7 +41,7 @@ int	list_length(Node *head)
 	return (len);
 }
 
-int	min_value_index(Node *head)
+int	min_value_index( t_node *head)
 {
 	int	min_val;
 	int	min_idx;

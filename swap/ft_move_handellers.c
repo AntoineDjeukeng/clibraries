@@ -6,13 +6,13 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 13:35:28 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/13 16:31:10 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/23 17:51:00 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-int	get_target_position(Stack *s, int value)
+int	get_target_position(t_stack *s, int value)
 {
 	int	len;
 	int	i;
@@ -39,7 +39,7 @@ int	get_target_position(Stack *s, int value)
 	return (min_value_index(s->a));
 }
 
-void	repeat_rotate(Stack *s, char stack_name, int count, int reverse)
+void	repeat_rotate(t_stack *s, char stack_name, int count, int reverse)
 {
 	int	i;
 
@@ -64,9 +64,9 @@ void	repeat_rotate(Stack *s, char stack_name, int count, int reverse)
 	}
 }
 
-void	rotate_to_top(Stack *s, char stack_name, int idx)
+void	rotate_to_top(t_stack *s, char stack_name, int idx)
 {
-	Node	*stack;
+	t_node	*stack;
 	int		len;
 
 	if (stack_name == 'a')
@@ -82,12 +82,12 @@ void	rotate_to_top(Stack *s, char stack_name, int idx)
 		repeat_rotate(s, stack_name, len - idx, 1);
 }
 
-void	bring_smallest_to_top(Stack *s)
+void	bring_smallest_to_top(t_stack *s)
 {
 	int		min_val;
 	int		min_index;
 	int		i;
-	Node	*cur;
+	t_node	*cur;
 
 	if (!s || !s->a)
 		return ;

@@ -6,28 +6,28 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 20:17:39 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/13 20:19:35 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/23 17:49:59 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	sa(Stack *s)
+void	sa( t_stack *s)
 {
-	swap(&(s->a), s, "sa");
+	swap(&(s->a), s, "sa\n");
 }
 
-void	sb(Stack *s)
+void	sb( t_stack *s)
 {
-	swap(&(s->b), s, "sb");
+	swap(&(s->b), s, "sb\n");
 }
 
-void	pa(Stack *s)
+void	pa( t_stack *s)
 {
-	push(&(s->b), &(s->a), s, "pa");
+	push(&(s->b), &(s->a), s, "pa\n");
 }
 
-void	pb(Stack *s)
+void	pb( t_stack *s)
 {
-	push(&(s->a), &(s->b), s, "pb");
+	push(&(s->a), &(s->b), s, "pb\n");
 }

@@ -6,13 +6,13 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 04:23:26 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/22 14:43:58 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/23 17:51:18 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	rotate_both_negative(Stack *s, int a_rot, int b_rot)
+void	rotate_both_negative( t_stack *s, int a_rot, int b_rot)
 {
 	while (a_rot < 0 && b_rot < 0)
 	{
@@ -32,7 +32,7 @@ void	rotate_both_negative(Stack *s, int a_rot, int b_rot)
 	}
 }
 
-void	rotate_both(Stack *s, int a_rot, int b_rot)
+void	rotate_both( t_stack *s, int a_rot, int b_rot)
 {
 	while (a_rot > 0 && b_rot > 0)
 	{
@@ -54,23 +54,32 @@ void	rotate_both(Stack *s, int a_rot, int b_rot)
 		rotate_both_negative(s, a_rot, b_rot);
 }
 
-void	rrr(Stack *s)
+void	rrr( t_stack *s)
 {
 	if (s->a && s->b)
 	{
 		reverse_rotate(&(s->a), s, NULL);
 		reverse_rotate(&(s->b), s, NULL);
-		
-		s->ops[s->op_count++] = ft_strdup("rrr");
+		s->ops[s->op_count++] = ft_strdup("rrr\n");
 	}
 }
 
-void	rr(Stack *s)
+void	rr( t_stack *s)
 {
 	if (s->a && s->b)
 	{
 		rotate(&(s->a), s, NULL);
 		rotate(&(s->b), s, NULL);
-		s->ops[s->op_count++] = ft_strdup("rr");
+		s->ops[s->op_count++] = ft_strdup("rr\n");
+	}
+}
+
+void	ss( t_stack *s)
+{
+	if (s->a && s->b)
+	{
+		swap(&(s->a), s, NULL);
+		swap(&(s->b), s, NULL);
+		s->ops[s->op_count++] = ft_strdup("ss\n");
 	}
 }

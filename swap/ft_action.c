@@ -6,15 +6,15 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 04:59:49 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/22 14:22:10 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/23 17:52:05 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	push(Node **src, Node **dst, Stack *s, const char *name)
+void	push(t_node **src, t_node **dst, t_stack *s, const char *name)
 {
-	Node	*node;
+	t_node	*node;
 
 	if (*src == NULL)
 		return ;
@@ -22,13 +22,14 @@ void	push(Node **src, Node **dst, Stack *s, const char *name)
 	*src = node->next;
 	node->next = *dst;
 	*dst = node;
-	s->ops[s->op_count++] = ft_strdup((char *)name);
+	if (name)
+		s->ops[s->op_count++] = ft_strdup((char *)name);
 }
 
-void	swap(Node **s, Stack *stack, const char *name)
+void	swap(t_node **s, t_stack *stack, const char *name)
 {
-	Node	*first;
-	Node	*second;
+	t_node	*first;
+	t_node	*second;
 
 	if (*s == NULL || (*s)->next == NULL)
 		return ;
@@ -37,13 +38,14 @@ void	swap(Node **s, Stack *stack, const char *name)
 	first->next = second->next;
 	second->next = first;
 	*s = second;
-	stack->ops[stack->op_count++] = ft_strdup((char *)name);
+	if (name)
+		stack->ops[stack->op_count++] = ft_strdup((char *)name);
 }
 
-void	rotate(Node **s, Stack *stack, const char *name)
+void	rotate(t_node **s, t_stack *stack, const char *name)
 {
-	Node	*head;
-	Node	*tail;
+	t_node	*head;
+	t_node	*tail;
 
 	if (*s == NULL || (*s)->next == NULL)
 		return ;
@@ -58,10 +60,10 @@ void	rotate(Node **s, Stack *stack, const char *name)
 		stack->ops[stack->op_count++] = ft_strdup((char *)name);
 }
 
-void	reverse_rotate(Node **s, Stack *stack, const char *name)
+void	reverse_rotate(t_node **s, t_stack *stack, const char *name)
 {
-	Node	*prev;
-	Node	*tail;
+	t_node	*prev;
+	t_node	*tail;
 
 	if (*s == NULL || (*s)->next == NULL)
 		return ;
