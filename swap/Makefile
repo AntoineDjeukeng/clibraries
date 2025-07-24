@@ -1,17 +1,17 @@
 # Existing executable
 NAME = push_swap
 # Bonus executable
-BONUS_NAME = checker_linux
+BONUS_NAME = checker
  
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -I./libft
 LDFLAGS = -L./libft -lft  
 
 # Source files
-SRC = ft_m_actions.c ft_action.c ft_quicksort.c ft_hande_input_output.c ft_move_l1.c  ft_move_handellers.c ft_wrappers1.c ft_wrappers2.c ft_sort.c\
+SRC = ft_m_actions.c ft_action.c ft_quicksort.c ft_hande_input_output.c ft_move_l1.c  ft_move_handellers.c ft_wrappers1.c  ft_wrappers2.c ft_sort.c\
       $(wildcard utils/*.c) \
 # Normal build uses main.c
-SRCS_MAIN = main.c $(SRC)
+SRCS_MAIN = main.c   $(SRC)
 OBJS_MAIN = $(SRCS_MAIN:.c=.o)
 
 # Bonus build uses main_bonus.c instead of main.c

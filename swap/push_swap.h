@@ -6,7 +6,7 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 17:21:10 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/23 17:48:03 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/24 12:38:27 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,3 +98,4 @@ void				evaluate_move(t_stack *s, t_move_data *m);
 long				ft_atol(const char *str);
 void				ft_check_results(t_stack *s);
 void				move_element(t_stack *s);
+int	ft_input_str(char *str);

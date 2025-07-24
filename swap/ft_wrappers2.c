@@ -6,11 +6,12 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 20:17:39 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/23 17:49:59 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/24 09:10:22 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
+#include <stdio.h>
 
 void	sa( t_stack *s)
 {

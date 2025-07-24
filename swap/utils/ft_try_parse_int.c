@@ -6,7 +6,7 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 09:46:34 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/23 17:27:59 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/24 10:08:04 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,20 +30,27 @@ static int	ft_parse_digits(const char *str, int *index, long *result)
 {
 	long	temp;
 	int		i;
+	int		digit_count;
 
 	temp = 0;
 	i = *index;
+	digit_count = 0;
+
 	if (str[i] < '0' || str[i] > '9')
 		return (0);
 	while (str[i] >= '0' && str[i] <= '9')
 	{
+		if (digit_count >= 10)
+			return (0); 
 		temp = temp * 10 + (str[i] - '0');
+		digit_count++;
 		i++;
 	}
 	*result = temp;
 	*index = i;
 	return (1);
 }
+
 
 int	ft_try_parse_int(const char *str, int *out)
 {
@@ -58,8 +65,8 @@ int	ft_try_parse_int(const char *str, int *out)
 		return (0);
 	if ((sign == 1 && result > INT_MAX) || (sign == -1 && - result < INT_MIN))
 		return (0);
-	while (ft_isspace(str[i]))
-		i++;
+	// while (ft_isspace(str[i]))
+	// 	i++;
 	if (str[i] != '\0')
 		return (0);
 	if (out)

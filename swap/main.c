@@ -6,7 +6,7 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 13:50:19 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/23 17:48:45 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/24 09:31:42 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,13 @@ void	print_ops(t_stack *s)
 		ft_printf("%s", s->ops[i++]);
 	}
 }
+
+// void	print_ops(t_stack *s)
+// {
+// 	optimize_ops(s->ops, &s->op_count);  // optimize before printing
+// 	for (int i = 0; i < s->op_count; i++)
+// 		ft_printf("%s", s->ops[i]);
+// }
 
 void	free_list(t_node *head)
 {

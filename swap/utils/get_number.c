@@ -6,7 +6,7 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 11:21:16 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/22 12:24:25 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/24 10:13:57 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,10 @@ int	ft_is_sorted(int *array, int size)
 	return (1);
 }
 
-static int	ft_input_error(void)
+int	ft_input_str(char *str)
 {
-	ft_printf("error\n");
+
+	write(2, str, ft_strlen((const char *)str));
 	return (0);
 }
 
@@ -61,11 +62,15 @@ int	ft_process_input(const int count, const char **str, int *numbers)
 	while (i < count)
 	{
 		value = 0;
+		// ft_printf("the argument is `%s`\n",str[i]);
 		if (ft_try_parse_int(str[i], &value) && ft_is_unique(numbers, i - 1,
-				value))
+            value))
+        {
+            
 			numbers[i - 1] = value;
+        }
 		else
-			return (ft_input_error());
+			return (ft_input_str("Error\n"));
 		i++;
 	}
 	return (1);

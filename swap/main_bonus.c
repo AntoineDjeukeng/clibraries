@@ -6,7 +6,7 @@
 /*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 17:13:38 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/23 17:49:45 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/24 10:33:18 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,7 @@ t_stack	*ft_stack_setup(int argc, char **argv, int **out_values, int *out_count)
 	values = malloc(count * sizeof(int));
 	if (!values)
 		return (NULL);
-	if (!ft_process_input(argc, (const char **)argv, values)
-		|| ft_is_sorted(values, count))
+	if (!ft_process_input(argc, (const char **)argv, values))
 	{
 		free(values);
 		return (NULL);
@@ -86,10 +85,18 @@ int	main(int argc, char **argv)
 	s = ft_stack_setup(argc, argv, &values, &count);
 	if (!s)
 		return (1);
+
 	s->a = NULL;
 	s->b = NULL;
 	s->op_count = 0;
 	s->size = count;
+	if ( ft_is_sorted(values, count))
+	{
+		free(values);
+		cleanup(s);
+		ft_printf("OK\n");
+		return (0);
+	}
 	init_stack(s, values);
 	line = get_next_line(0);
 	while (line)
