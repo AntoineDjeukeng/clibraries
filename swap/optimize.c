@@ -73,7 +73,7 @@ char	**peephole_optimize(char **ops, int count, int *new_count)
 	return out;
 }
 
-ARG=$(python3 -c "import random; print(' '.join(map(str, random.sample(range(-300, 300), 600))))")
+// ARG=$(python3 -c "import random; print(' '.join(map(str, random.sample(range(-300, 300), 600))))")
 
 
 // int	main(void)

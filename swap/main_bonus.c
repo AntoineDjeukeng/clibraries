@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
+/*   By: adjeuken <adjeuken@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 17:13:38 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/24 10:33:18 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/24 22:36:07 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,23 @@ t_stack	*ft_stack_setup(int argc, char **argv, int **out_values, int *out_count)
 	*out_count = count;
 	return (s);
 }
+int ft_get_first_line(char **line)
+{
+	struct pollfd fds[1];
+	int result;
+	if(!line)
+		return 1;
+	fds[0].fd = 0;
+	fds[0].events= POLLIN;
+	result= poll(fds,1,30);
+	if(result<=0)
+		return 1;
+	*line= get_next_line(0);
+	if(!*line)
+		return 1;
+	return 0;
 
+}
 int	main(int argc, char **argv)
 {
 	int		*values;
@@ -90,18 +106,36 @@ int	main(int argc, char **argv)
 	s->b = NULL;
 	s->op_count = 0;
 	s->size = count;
-	if ( ft_is_sorted(values, count))
+	// if ( ft_is_sorted(values, count))
+	// {
+	// 	free(values);
+	// 	cleanup(s);
+	// 	ft_printf("OK\n");
+	// 	return (0);
+	// }
+	if(ft_get_first_line(&line))
 	{
 		free(values);
 		cleanup(s);
-		ft_printf("OK\n");
-		return (0);
+		// ft_input_str("Error\n");
+		ft_error();
+		return 1;
 	}
 	init_stack(s, values);
-	line = get_next_line(0);
 	while (line)
 	{
-		apply_operation(line, s);
+		// int i;
+		// i=apply_operation(line, s);
+		// ft_printf("Er1ro i=  %d\n",i);
+		if(apply_operation(line, s)!=1)
+		{
+			free(line);
+			cleanup(s);
+			free(values);
+			// ft_input_str("Error\n");
+			ft_error();
+			return 1;
+		}
 		free(line);
 		line = get_next_line(0);
 	}

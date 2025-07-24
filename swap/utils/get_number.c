@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_number.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
+/*   By: adjeuken <adjeuken@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 11:21:16 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/24 10:13:57 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/24 22:43:52 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,11 +62,11 @@ int	ft_process_input(const int count, const char **str, int *numbers)
 	while (i < count)
 	{
 		value = 0;
-		// ft_printf("the argument is `%s`\n",str[i]);
+		ft_printf("the argument is `%s`\n",str[i]);
 		if (ft_try_parse_int(str[i], &value) && ft_is_unique(numbers, i - 1,
             value))
         {
-            
+
 			numbers[i - 1] = value;
         }
 		else
