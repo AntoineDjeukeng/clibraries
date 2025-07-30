@@ -1,37 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_sort.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adjeuken <adjeuken@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/25 10:44:57 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/25 10:45:28 by adjeuken         ###   ########.fr       */
+/*   Created: 2025/07/23 17:26:55 by adjeuken          #+#    #+#             */
+/*   Updated: 2025/07/25 10:46:59 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "push_swap.h"
+#include "../push_swap.h"
 
-int	main(int agrc, char *agrv[])
+// you have to fix the chunck size (50)
+void	sort(t_stack *s)
 {
-	int		i;
-	t_stack	*s;
+	int	i;
+	int	a_front;
 
-	s = ft_init_stack_list(agrc, agrv, 0);
-	if (!s->state)
+	i = 0;
+	while (s->a != NULL)
 	{
-		sort(s);
-		bring_smallest_to_top(s);
-		i = 0;
-		while (i < s->op_count)
+		a_front = s->a->index;
+		if (a_front <= i + 50)
 		{
-			if (s->ops[i])
-			{
-				ft_printf("%s", s->ops[i]);
-			}
+			pb(s);
+			if (a_front > i)
+				rb(s);
 			i++;
 		}
+		else
+			ra(s);
 	}
-	ft_clean_stac(s);
-	return (0);
+	while (s->b != NULL)
+		move_element(s);
 }

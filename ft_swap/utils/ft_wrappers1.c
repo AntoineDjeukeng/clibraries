@@ -1,37 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_wrappers1.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adjeuken <adjeuken@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/25 10:44:57 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/25 10:45:28 by adjeuken         ###   ########.fr       */
+/*   Created: 2025/07/13 16:16:03 by adjeuken          #+#    #+#             */
+/*   Updated: 2025/07/25 10:46:55 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "push_swap.h"
+#include "../push_swap.h"
 
-int	main(int agrc, char *agrv[])
+void	ra(t_stack *s)
 {
-	int		i;
-	t_stack	*s;
+	rotate(&(s->a), s, "ra\n");
+}
 
-	s = ft_init_stack_list(agrc, agrv, 0);
-	if (!s->state)
-	{
-		sort(s);
-		bring_smallest_to_top(s);
-		i = 0;
-		while (i < s->op_count)
-		{
-			if (s->ops[i])
-			{
-				ft_printf("%s", s->ops[i]);
-			}
-			i++;
-		}
-	}
-	ft_clean_stac(s);
-	return (0);
+void	rb(t_stack *s)
+{
+	rotate(&(s->b), s, "rb\n");
+}
+
+void	rra(t_stack *s)
+{
+	reverse_rotate(&(s->a), s, "rra\n");
+}
+
+void	rrb(t_stack *s)
+{
+	reverse_rotate(&(s->b), s, "rrb\n");
 }

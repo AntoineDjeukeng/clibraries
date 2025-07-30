@@ -1,37 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_isalnum.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adjeuken <adjeuken@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/25 10:44:57 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/25 10:45:28 by adjeuken         ###   ########.fr       */
+/*   Created: 2025/05/19 14:07:48 by adjeuken          #+#    #+#             */
+/*   Updated: 2025/05/21 09:57:57 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "push_swap.h"
+#include "libft.h"
 
-int	main(int agrc, char *agrv[])
+static int	sft_isalpha(int c)
 {
-	int		i;
-	t_stack	*s;
+	unsigned char	uc;
 
-	s = ft_init_stack_list(agrc, agrv, 0);
-	if (!s->state)
-	{
-		sort(s);
-		bring_smallest_to_top(s);
-		i = 0;
-		while (i < s->op_count)
-		{
-			if (s->ops[i])
-			{
-				ft_printf("%s", s->ops[i]);
-			}
-			i++;
-		}
-	}
-	ft_clean_stac(s);
-	return (0);
+	uc = (unsigned char)c;
+	return ((uc >= 'A' && uc <= 'Z') || (uc >= 'a' && uc <= 'z'));
+}
+
+static int	sft_isdigit(int c)
+{
+	unsigned char	uc;
+
+	uc = (unsigned char)c;
+	return (uc >= '0' && uc <= '9');
+}
+
+int	ft_isalnum(int c)
+{
+	return (sft_isalpha(c) || sft_isdigit(c));
 }

@@ -1,37 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_lstnew.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adjeuken <adjeuken@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/25 10:44:57 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/25 10:45:28 by adjeuken         ###   ########.fr       */
+/*   Created: 2025/05/23 15:46:05 by adjeuken          #+#    #+#             */
+/*   Updated: 2025/05/26 15:17:30 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "push_swap.h"
+#include "libft.h"
 
-int	main(int agrc, char *agrv[])
+t_list	*ft_lstnew(void *content)
 {
-	int		i;
-	t_stack	*s;
+	t_list	*result;
 
-	s = ft_init_stack_list(agrc, agrv, 0);
-	if (!s->state)
-	{
-		sort(s);
-		bring_smallest_to_top(s);
-		i = 0;
-		while (i < s->op_count)
-		{
-			if (s->ops[i])
-			{
-				ft_printf("%s", s->ops[i]);
-			}
-			i++;
-		}
-	}
-	ft_clean_stac(s);
-	return (0);
+	result = malloc(sizeof(t_list));
+	if (!result)
+		return (NULL);
+	result->content = content;
+	result->next = NULL;
+	return (result);
 }

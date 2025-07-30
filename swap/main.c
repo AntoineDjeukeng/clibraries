@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adjeuken  <adjeuken@student.42.fr>         +#+  +:+       +#+        */
+/*   By: adjeuken <adjeuken@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 13:50:19 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/24 09:31:42 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/25 00:50:29 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,34 +54,106 @@ void	cleanup(t_stack *s)
 	free(s);
 }
 
-t_stack	*ft_stack_setup(int argc, char **argv, int **out_values, int *out_count)
+char **ft_hand_argv(char **argv, int count, int *out)
 {
-	int		count;
-	int		*values;
-	t_stack	*s;
+	char **str;
+	int i = 0;
 
-	count = argc - 1;
-	if (count <= 0)
-		return (NULL);
-	values = malloc(count * sizeof(int));
-	if (!values)
-		return (NULL);
-	if (!ft_process_input(argc, (const char **)argv, values)
-		|| ft_is_sorted(values, count))
+	if (count == 2)
 	{
-		free(values);
-		return (NULL);
+		str = ft_split(argv[1], ' ');
+		if (!str)
+			return NULL;
+		while (str[i])
+			i++;
 	}
-	s = malloc(sizeof(t_stack));
-	if (!s)
+	else if (count > 2)
 	{
-		free(values);
-		return (NULL);
+		str = malloc(count * sizeof(char *));
+		if (!str)
+			return NULL;
+		while (i < count - 1)
+		{
+			str[i] = ft_strdup(argv[i + 1]);
+			if (!str[i])
+			{
+				while (--i >= 0) free(str[i]);
+				free(str);
+				return NULL;
+			}
+			i++;
+		}
+		str[i] = NULL;
 	}
-	*out_values = values;
-	*out_count = count;
-	return (s);
+	else
+	{
+		*out = 0;
+		return NULL;
+	}
+	*out = i;
+	return str;
 }
+
+#include <stdio.h>
+
+void free_split(char **str)
+{
+	int i =0;
+	while (str[i])
+	{
+		free(str[i]);
+		i++;
+	}
+	free(str);
+}
+t_stack *ft_stack_setup(int argc, char **argv, int **out_values, int *out_count)
+{
+    int count;
+    int *values;
+    t_stack *s;
+    char **args;
+    int need_free = 0;
+
+    args = ft_hand_argv(argv, argc, &count);
+    if (!args || count <= 0)
+    {
+        write(2, "Error\n", 6);
+        return NULL;
+    }
+
+    if (argc == 2)
+        need_free = 1;
+
+    values = malloc(count * sizeof(int));
+    if (!values)
+    {
+        if (need_free) free_split(args);
+        return NULL;
+    }
+
+    if (!ft_process_input(count, (const char **)args, values)
+        || ft_is_sorted(values, count))
+    {
+        free(values);
+        if (need_free) free_split(args);
+        return NULL;
+    }
+
+    s = malloc(sizeof(t_stack));
+    if (!s)
+    {
+        free(values);
+        if (need_free) free_split(args);
+        return NULL;
+    }
+
+    *out_values = values;
+    *out_count = count;
+    if (need_free)
+        free_split(args);
+    return s;
+}
+
 
 int	main(int argc, char **argv)
 {
@@ -101,6 +173,7 @@ int	main(int argc, char **argv)
 	bring_smallest_to_top(s);
 	print_ops(s);
 	cleanup(s);
+	ft_printf("the argument is \n");
 	free(values);
 	return (0);
 }

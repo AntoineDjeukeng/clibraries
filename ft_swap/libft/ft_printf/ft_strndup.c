@@ -1,37 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_strndup.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adjeuken <adjeuken@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/25 10:44:57 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/25 10:45:28 by adjeuken         ###   ########.fr       */
+/*   Created: 2025/05/21 08:43:37 by adjeuken          #+#    #+#             */
+/*   Updated: 2025/07/17 11:35:58 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "push_swap.h"
+#include "ft_printf.h"
 
-int	main(int agrc, char *agrv[])
+char	*ft_strndup(const char *s, size_t n)
 {
-	int		i;
-	t_stack	*s;
+	size_t	i;
+	size_t	j;
+	char	*dup;
 
-	s = ft_init_stack_list(agrc, agrv, 0);
-	if (!s->state)
+	i = 0;
+	j = 0;
+	while (i < n && s[i])
+		i++;
+	dup = (char *)malloc(i + 1);
+	if (!dup)
+		return (NULL);
+	while (j < i)
 	{
-		sort(s);
-		bring_smallest_to_top(s);
-		i = 0;
-		while (i < s->op_count)
-		{
-			if (s->ops[i])
-			{
-				ft_printf("%s", s->ops[i]);
-			}
-			i++;
-		}
+		dup[j] = s[j];
+		j++;
 	}
-	ft_clean_stac(s);
-	return (0);
+	dup[i] = '\0';
+	return (dup);
 }

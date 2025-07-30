@@ -6,7 +6,7 @@
 /*   By: adjeuken <adjeuken@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 11:21:16 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/24 22:43:52 by adjeuken         ###   ########.fr       */
+/*   Updated: 2025/07/24 23:23:35 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int	ft_process_input(const int count, const char **str, int *numbers)
 	int	i;
 	int	value;
 
-	i = 1;
+	i = 0;
 	while (i < count)
 	{
 		value = 0;

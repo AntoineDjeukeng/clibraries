@@ -1,37 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_lstclear.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adjeuken <adjeuken@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/25 10:44:57 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/25 10:45:28 by adjeuken         ###   ########.fr       */
+/*   Created: 2025/05/23 16:13:08 by adjeuken          #+#    #+#             */
+/*   Updated: 2025/05/26 18:04:54 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "push_swap.h"
+#include "libft.h"
 
-int	main(int agrc, char *agrv[])
+void	ft_lstclear(t_list **lst, void (*del)(void *))
 {
-	int		i;
-	t_stack	*s;
+	t_list	*temp;
+	t_list	*current;
 
-	s = ft_init_stack_list(agrc, agrv, 0);
-	if (!s->state)
+	if (!lst || !del)
+		return ;
+	current = *lst;
+	while (current != NULL)
 	{
-		sort(s);
-		bring_smallest_to_top(s);
-		i = 0;
-		while (i < s->op_count)
-		{
-			if (s->ops[i])
-			{
-				ft_printf("%s", s->ops[i]);
-			}
-			i++;
-		}
+		temp = current->next;
+		ft_lstdelone(current, del);
+		current = temp;
 	}
-	ft_clean_stac(s);
-	return (0);
+	*lst = NULL;
 }

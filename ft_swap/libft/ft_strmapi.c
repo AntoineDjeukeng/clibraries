@@ -1,37 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_strmapi.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adjeuken <adjeuken@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/25 10:44:57 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/25 10:45:28 by adjeuken         ###   ########.fr       */
+/*   Created: 2025/05/22 14:47:53 by adjeuken          #+#    #+#             */
+/*   Updated: 2025/05/26 16:31:59 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "push_swap.h"
+#include "libft.h"
 
-int	main(int agrc, char *agrv[])
+char	*ft_strmapi(char const *s, char (*f)(unsigned int, char))
 {
-	int		i;
-	t_stack	*s;
+	unsigned int	len;
+	unsigned int	i;
+	char			*result;
 
-	s = ft_init_stack_list(agrc, agrv, 0);
-	if (!s->state)
+	if (!s || !f)
+		return (NULL);
+	len = ft_strlen((char *)s);
+	result = malloc((len + 1) * sizeof(char));
+	if (!result)
+		return (NULL);
+	i = 0;
+	while (s[i])
 	{
-		sort(s);
-		bring_smallest_to_top(s);
-		i = 0;
-		while (i < s->op_count)
-		{
-			if (s->ops[i])
-			{
-				ft_printf("%s", s->ops[i]);
-			}
-			i++;
-		}
+		result[i] = f(i, s[i]);
+		i++;
 	}
-	ft_clean_stac(s);
-	return (0);
+	result[len] = '\0';
+	return (result);
 }

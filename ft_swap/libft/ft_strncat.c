@@ -1,37 +1,45 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_strncat.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adjeuken <adjeuken@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/25 10:44:57 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/25 10:45:28 by adjeuken         ###   ########.fr       */
+/*   Created: 2025/05/19 17:50:45 by adjeuken          #+#    #+#             */
+/*   Updated: 2025/05/21 11:18:16 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "push_swap.h"
+#include "libft.h"
 
-int	main(int agrc, char *agrv[])
+static int	sft_strlen(char *str)
 {
-	int		i;
-	t_stack	*s;
+	int	count;
 
-	s = ft_init_stack_list(agrc, agrv, 0);
-	if (!s->state)
+	count = 0;
+	while (*str)
 	{
-		sort(s);
-		bring_smallest_to_top(s);
-		i = 0;
-		while (i < s->op_count)
-		{
-			if (s->ops[i])
-			{
-				ft_printf("%s", s->ops[i]);
-			}
-			i++;
-		}
+		count++;
+		str++;
 	}
-	ft_clean_stac(s);
-	return (0);
+	return (count);
+}
+
+char	*ft_strncat(char *dest, const char *src, size_t n)
+{
+	char	*start;
+	size_t	i;
+	size_t	l;
+
+	start = dest;
+	l = sft_strlen(dest);
+	i = 0;
+	while (src[i] && n > 0)
+	{
+		dest[l + i] = src[i];
+		i++;
+		n--;
+	}
+	dest[l + i] = '\0';
+	return (start);
 }

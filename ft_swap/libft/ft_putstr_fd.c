@@ -1,37 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_putstr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adjeuken <adjeuken@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/25 10:44:57 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/25 10:45:28 by adjeuken         ###   ########.fr       */
+/*   Created: 2025/05/22 15:28:18 by adjeuken          #+#    #+#             */
+/*   Updated: 2025/05/26 16:33:12 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "push_swap.h"
+#include "libft.h"
 
-int	main(int agrc, char *agrv[])
+void	ft_putstr_fd(char *s, int fd)
 {
-	int		i;
-	t_stack	*s;
+	int	i;
 
-	s = ft_init_stack_list(agrc, agrv, 0);
-	if (!s->state)
+	if (!s || !fd)
+		return ;
+	i = 0;
+	while (s[i])
 	{
-		sort(s);
-		bring_smallest_to_top(s);
-		i = 0;
-		while (i < s->op_count)
-		{
-			if (s->ops[i])
-			{
-				ft_printf("%s", s->ops[i]);
-			}
-			i++;
-		}
+		write(fd, &s[i], 1);
+		i++;
 	}
-	ft_clean_stac(s);
-	return (0);
 }

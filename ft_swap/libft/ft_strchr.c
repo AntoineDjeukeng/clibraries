@@ -1,37 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adjeuken <adjeuken@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/25 10:44:57 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/25 10:45:28 by adjeuken         ###   ########.fr       */
+/*   Created: 2025/05/19 19:48:42 by adjeuken          #+#    #+#             */
+/*   Updated: 2025/05/26 13:37:29 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "push_swap.h"
+#include "libft.h"
 
-int	main(int agrc, char *agrv[])
+char	*ft_strchr(const char *s, int c)
 {
-	int		i;
-	t_stack	*s;
+	unsigned char	uc;
 
-	s = ft_init_stack_list(agrc, agrv, 0);
-	if (!s->state)
+	uc = (unsigned char)c;
+	while (*s)
 	{
-		sort(s);
-		bring_smallest_to_top(s);
-		i = 0;
-		while (i < s->op_count)
-		{
-			if (s->ops[i])
-			{
-				ft_printf("%s", s->ops[i]);
-			}
-			i++;
-		}
+		if ((unsigned char)*s == uc)
+			return ((char *)s);
+		s++;
 	}
-	ft_clean_stac(s);
-	return (0);
+	if ((unsigned char)*s == uc)
+		return ((char *)s);
+	return (NULL);
 }

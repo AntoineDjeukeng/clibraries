@@ -1,37 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_bzero.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adjeuken <adjeuken@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/25 10:44:57 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/25 10:45:28 by adjeuken         ###   ########.fr       */
+/*   Created: 2025/05/19 14:53:11 by adjeuken          #+#    #+#             */
+/*   Updated: 2025/05/21 08:56:49 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "push_swap.h"
+#include "libft.h"
 
-int	main(int agrc, char *agrv[])
+// it just reset the memory it doesn't release it back to the system
+void	ft_bzero(void *s, size_t n)
 {
-	int		i;
-	t_stack	*s;
+	unsigned char	*ptr;
+	size_t			i;
 
-	s = ft_init_stack_list(agrc, agrv, 0);
-	if (!s->state)
+	ptr = (unsigned char *)s;
+	i = 0;
+	while (i < n)
 	{
-		sort(s);
-		bring_smallest_to_top(s);
-		i = 0;
-		while (i < s->op_count)
-		{
-			if (s->ops[i])
-			{
-				ft_printf("%s", s->ops[i]);
-			}
-			i++;
-		}
+		ptr[i] = '\0';
+		i++;
 	}
-	ft_clean_stac(s);
-	return (0);
 }

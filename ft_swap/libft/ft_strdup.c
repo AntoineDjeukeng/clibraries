@@ -1,37 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adjeuken <adjeuken@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/25 10:44:57 by adjeuken          #+#    #+#             */
-/*   Updated: 2025/07/25 10:45:28 by adjeuken         ###   ########.fr       */
+/*   Created: 2025/05/21 08:43:37 by adjeuken          #+#    #+#             */
+/*   Updated: 2025/05/21 10:01:30 by adjeuken         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "push_swap.h"
+#include "libft.h"
 
-int	main(int agrc, char *agrv[])
+char	*ft_strdup(char *s)
 {
 	int		i;
-	t_stack	*s;
+	char	*dup;
 
-	s = ft_init_stack_list(agrc, agrv, 0);
-	if (!s->state)
+	i = 0;
+	while (s[i])
+		i++;
+	dup = (char *)malloc((i + 1) * sizeof(char));
+	if (!dup)
+		return (NULL);
+	i = 0;
+	while (s[i])
 	{
-		sort(s);
-		bring_smallest_to_top(s);
-		i = 0;
-		while (i < s->op_count)
-		{
-			if (s->ops[i])
-			{
-				ft_printf("%s", s->ops[i]);
-			}
-			i++;
-		}
+		dup[i] = s[i];
+		i++;
 	}
-	ft_clean_stac(s);
-	return (0);
+	dup[i] = '\0';
+	return (dup);
 }
